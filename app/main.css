@@ -33,12 +33,10 @@ table {
 
 body {
   color: #1d1d1d;
-  padding: 30px;
-  background: #eee;
   font-family: 'Helvetica', sans-serif; }
 
 canvas {
-  opacity: 0.25;
+  display: block;
   pointer-events: none; }
 
 a {

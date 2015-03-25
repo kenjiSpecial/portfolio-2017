@@ -13,16 +13,16 @@ const budo = require('budo')
 const browserify = require('browserify')
 const resetCSS = require('node-reset-scss').includePath
 
-const entry = './src/index.js'
+const entry = './src/js/index.js'
 const transforms = ['babelify']
 
 //our CSS pre-processor
 gulp.task('sass', function() {
   gulp.src('./src/sass/main.scss')
-    .pipe(sass({ 
+    .pipe(sass({
       errLogToConsole: true,
       outputStyle: argv.production ? 'compressed' : undefined,
-      includePaths: [ resetCSS ] 
+      includePaths: [ resetCSS ]
     }))
     .pipe(gulp.dest('./app'))
 })
@@ -43,7 +43,7 @@ gulp.task('watch', ['sass'], function(cb) {
     outfile: 'bundle.js'   //output bundle relative to dir
   }).on('connect', function(info) {
     console.log("Server running on", info.uri)
-    
+
     //open the browser
     if (argv.open || argv.o) {
       onChange(info.glob, function() {
