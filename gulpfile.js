@@ -14,7 +14,7 @@ const browserify = require('browserify')
 const resetCSS = require('node-reset-scss').includePath
 
 const entry = './src/js/index.js'
-const transforms = ['babelify']
+const transforms = ['babelify', 'browserify-shader']
 
 //our CSS pre-processor
 gulp.task('sass', function() {

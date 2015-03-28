@@ -1,21 +1,27 @@
+var fragmentText = require('./shaders/shader.frag')();
+var vertexText = require('./shaders/shader.vert')();
+
 const THREE = require('three');
 
 var camera, scene, renderer;
-var geometry, material, mesh;
+var geometry, shaderMaterial, mesh;
 
 function init () {
   camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
   camera.position.z = 1000;
 
   scene = new THREE.Scene();
-
+  console.log(vertexText);
   geometry = new THREE.BoxGeometry( 200, 200, 200 );
-  material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
+  shaderMaterial = new THREE.ShaderMaterial( {
+    vertexShader   : vertexText,
+    fragmentShader : fragmentText
+  } );
 
-  mesh = new THREE.Mesh( geometry, material );
+  mesh = new THREE.Mesh( geometry, shaderMaterial );
   scene.add( mesh );
 
-  renderer = new THREE.CanvasRenderer();
+  renderer = new THREE.WebGLRenderer();
   renderer.setSize( window.innerWidth, window.innerHeight );
   renderer.setClearColor( 0x000000 );
 

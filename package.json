@@ -10,7 +10,9 @@
     "url": "https://github.com/mattdesl"
   },
   "dependencies": {
+    "browserify-shader": "0.0.2",
     "domready": "^1.0.7",
+    "gsap": "^1.16.1",
     "raf-loop": "^1.0.1",
     "three": "^0.66.43"
   },

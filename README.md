@@ -1,3 +1,9 @@
+#three-js-startker-kit
+
+It is based on ("budo-gulp-starter")[https://github.com/mattdesl/budo-gulp-starter] by (Matt)[https://github.com/mattdesl]
+
+the below is the README.md of ("budo-gulp-starter")[https://github.com/mattdesl/budo-gulp-starter].
+
 ## In Development :construction:
 
 The [feature/gulp](https://github.com/mattdesl/budo/tree/feature/gulp) branch of budo is currently in development and review. Soon it should be part of master.
