@@ -1,6 +1,4 @@
 const argv = require('minimist')(process.argv.slice(2))
-const openURL = require('opn')
-const onChange = require('once-file-changes')
 
 const gulp = require('gulp')
 const sass = require('gulp-sass')
@@ -12,18 +10,20 @@ const source = require('vinyl-source-stream')
 const budo = require('budo')
 const browserify = require('browserify')
 const resetCSS = require('node-reset-scss').includePath
+const babelify = require('babelify').configure({
+  presets: ['es2015'] 
+})
 
-const entry = './src/js/index.js'
-const transforms = ['babelify', 'browserify-shader']
+const entry = './src/index.js'
+const outfile = 'bundle.js'
 
 //our CSS pre-processor
 gulp.task('sass', function() {
   gulp.src('./src/sass/main.scss')
-    .pipe(sass({
-      errLogToConsole: true,
+    .pipe(sass({ 
       outputStyle: argv.production ? 'compressed' : undefined,
-      includePaths: [ resetCSS ]
-    }))
+      includePaths: [ resetCSS ] 
+    }).on('error', sass.logError))
     .pipe(gulp.dest('./app'))
 })
 
@@ -34,32 +34,24 @@ gulp.task('watch', ['sass'], function(cb) {
 
   //dev server
   budo(entry, {
-    live: true,            //live reload & CSS injection
-    verbose: true,         //verbose watchify logging
-    dir: 'app',            //directory to serve
-    plugin: 'errorify',    //display errors in browser
-    transform: transforms, //browserify transforms
-    delay: 0,              //speed up watchify interval
-    outfile: 'bundle.js'   //output bundle relative to dir
-  }).on('connect', function(info) {
-    console.log("Server running on", info.uri)
-
-    //open the browser
-    if (argv.open || argv.o) {
-      onChange(info.glob, function() {
-        openURL(info.uri)
-      })
+    serve: 'bundle.js',     // end point for our <script> tag
+    stream: process.stdout, // pretty-print requests
+    live: true,             // live reload & CSS injection
+    dir: 'app',             // directory to serve
+    open: argv.open,        // whether to open the browser
+    browserify: {
+      transform: babelify   //browserify transforms
     }
   }).on('exit', cb)
 })
 
 //the distribution bundle task
 gulp.task('bundle', ['sass'], function() {
-  var bundler = browserify(entry, { transform: transforms })
+  var bundler = browserify(entry, { transform: babelify })
         .bundle()
   return bundler
     .pipe(source('index.js'))
     .pipe(streamify(uglify()))
-    .pipe(rename('bundle.js'))
+    .pipe(rename(outfile))
     .pipe(gulp.dest('./app'))
 })
