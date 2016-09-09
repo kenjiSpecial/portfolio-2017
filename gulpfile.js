@@ -30,10 +30,7 @@ gulp.task('sass', function() {
 })
 
 //the development task
-gulp.task('watch', ['sass'], function(cb) {
-  //watch SASS
-  gulp.watch('src/sass/*.scss', ['sass'])
-
+gulp.task('watch', function(cb) {
   //dev server
   budo(entry, {
     serve: 'bundle.js',     // end point for our <script> tag
@@ -51,7 +48,7 @@ gulp.task('watch', ['sass'], function(cb) {
 })
 
 //the distribution bundle task
-gulp.task('bundle', ['sass'], function() {
+gulp.task('bundle', function() {
   var bundler = browserify(entry, { transform: [babelify, glslify] })
         .bundle()
   return bundler
