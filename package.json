@@ -13,6 +13,7 @@
     "dat-gui": "*",
     "domready": "*",
     "gsap": "^1.19.0",
+    "stats.js": "mrdoob/stats.js",
     "three": "^0.81.2"
   },
   "devDependencies": {
