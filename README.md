@@ -1,8 +1,8 @@
-#three-js-startker-kit
+#three-js-prototype-startker-kit
 
-It is based on ("budo-gulp-starter")[https://github.com/mattdesl/budo-gulp-starter] by (Matt)[https://github.com/mattdesl]
+It is based on ["budo-gulp-starter"](https://github.com/mattdesl/budo-gulp-starter) by [Matt](https://github.com/mattdesl)
 
-the below is the README.md of ("budo-gulp-starter")[https://github.com/mattdesl/budo-gulp-starter].
+the below is the README.md of ["budo-gulp-starter"](https://github.com/mattdesl/budo-gulp-starter).
 
 ## In Development :construction:
 
