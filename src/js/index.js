@@ -1,8 +1,10 @@
-const glslify = require('glslify');
+"use strict";
 
+const TweenMax = require('gsap');
+const glslify = require('glslify');
 const THREE = require('three');
 
-var camera, scene, renderer;
+var camera, scene, renderer, mouse;
 var geometry, shaderMaterial, mesh;
 
 function init() {
@@ -24,6 +26,7 @@ function init() {
     renderer.setClearColor(0x000000);
 
     document.body.appendChild(renderer.domElement);
+    document.addEventListener('mousemove', onDocumentMouseMove, false);
 }
 
 function loop() {
@@ -37,5 +40,19 @@ function loop() {
 
 require('domready')(() => {
     init();
-    loop();
+
+    TweenMax.ticker.addEventListener("tick", loop);
+});
+
+function onDocumentMouseMove(event){
+    event.preventDefault();
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
+}
+
+window.addEventListener("resize", function(ev){
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
 });

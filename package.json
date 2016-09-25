@@ -13,7 +13,7 @@
     "dat-gui": "*",
     "domready": "*",
     "gsap": "^1.19.0",
-    "three": "^0.80.1"
+    "three": "^0.81.2"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.14.0",
