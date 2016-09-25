@@ -36,7 +36,6 @@ function init() {
 
 function loop() {
     var delta = clock.getDelta();
-    console.log(delta);
 
     mesh.rotation.x += 0.01;
     mesh.rotation.y += 0.02;
