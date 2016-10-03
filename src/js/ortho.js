@@ -4,6 +4,7 @@ const TweenMax = require('gsap');
 const glslify = require('glslify');
 const THREE = require('three');
 const Stats = require('stats.js');
+const GUI = require('dat-gui').GUI;
 
 var camera, scene, renderer, mouse, stats, geometry, shaderMaterial, mesh, clock;
 var isLoop;
@@ -18,9 +19,10 @@ function init() {
     camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     scene = new THREE.Scene();
 
-
     mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(2, 2));;
     scene.add(mesh);
+    
+    gui = new GUI();
 
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
