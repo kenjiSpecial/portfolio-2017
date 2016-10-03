@@ -8,6 +8,12 @@ const Stats = require('stats.js');
 var camera, scene, renderer, mouse, stats, geometry, shaderMaterial, mesh, clock;
 var isLoop;
 
+(() => {
+    init();
+    isLoop = true;
+    TweenMax.ticker.addEventListener("tick", loop);
+})()
+
 function init() {
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
     camera.position.z = 1000;
@@ -45,11 +51,6 @@ function loop() {
     stats.update()
 }
 
-require('domready')(() => {
-    init();
-    isLoop = true;
-    TweenMax.ticker.addEventListener("tick", loop);
-});
 
 function onDocumentMouseMove(event){
     event.preventDefault();
