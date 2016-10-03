@@ -20,7 +20,7 @@
     "babelify": "*",
     "browserify": "^13.1.0",
     "budo": "^9.0.0",
-    "glslify": "*",
+    "glslify": "^5.1.0",
     "gulp": "*",
     "gulp-rename": "*",
     "gulp-sass": "*",
