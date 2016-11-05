@@ -15,7 +15,7 @@ const babelify = require('babelify').configure({
   presets: ['es2015']
 })
 
-const entry = './src/js/texture.js'
+const entry = './src/js/index.js'
 const outfile = 'bundle.js'
 
 
