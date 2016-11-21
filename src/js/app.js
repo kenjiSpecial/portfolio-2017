@@ -15,7 +15,7 @@ export default class App {
 
         this.scene = new Scene();
 
-        this.mesh = this.createMesh()
+        this.mesh = this.createMesh();
         this.scene.add(this.mesh);
 
         this.renderer = new WebGLRenderer({
@@ -36,12 +36,12 @@ export default class App {
     }
 
     createMesh(){
-        var geometry = new BoxGeometry(200, 200, 200);
-        var shaderMaterial = new ShaderMaterial({
+        let geometry = new BoxGeometry(200, 200, 200);
+        let shaderMaterial = new ShaderMaterial({
             vertexShader: glslify('./shaders/shader.vert'),
             fragmentShader: glslify('./shaders/shader.frag')
         });
-        var mesh = new Mesh(geometry, shaderMaterial);
+        let mesh = new Mesh(geometry, shaderMaterial);
         return mesh;
     }
 
@@ -50,7 +50,7 @@ export default class App {
     }
 
     loop(){
-        var delta = this.clock.getDelta();
+        // let delta = this.clock.getDelta();
 
         this.mesh.rotation.x += 0.01;
         this.mesh.rotation.y += 0.02;
