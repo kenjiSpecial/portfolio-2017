@@ -24,6 +24,7 @@ Some highlights:
   - LiveReload browser refresh on `bundle.js` update
   - LiveReload CSS injection on *.scss changes
   - Babel for ES6 transpiling
+  - Roolify for ES6 Node Module
   - Syntax errors shown in the browser during development
 
 Note that budō is not tied to Gulp, and in some cases it may be easier to use it's command-line version. 
