@@ -1,11 +1,11 @@
 'use strict';
 
 import  {PerspectiveCamera, Scene, WebGLRenderer, BoxGeometry, Clock, ShaderMaterial, Mesh} from 'three';
+import oui from 'ouioui';
 
 const TweenMax = require('gsap');
 const glslify = require('glslify');
 const Stats = require('stats.js');
-const dat = require('dat-gui');
 
 export default class App {
     constructor(params){
@@ -26,13 +26,19 @@ export default class App {
         if(this.params.isDebug){
             this.stats = new Stats();
             document.body.appendChild(this.stats.dom);
-            this.dat = new dat.GUI();
-
+            let gui = oui.datoui(null, this.onUpdateOui.bind(this));
+            let b = {test: 10};
+            gui.add(b, 'test');
+            this.b = b;
         }
 
         this.clock = new Clock();
 
         this.resize();
+    }
+
+    onUpdateOui(){
+        console.log(this.b);
     }
 
     createMesh(){

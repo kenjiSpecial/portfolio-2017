@@ -1,22 +1,26 @@
-const argv = require('minimist')(process.argv.slice(2))
+const argv = require('minimist')(process.argv.slice(2));
 
-const gulp = require('gulp')
-const sass = require('gulp-sass')
-const uglify = require('gulp-uglify')
-const rename = require('gulp-rename')
-const streamify = require('gulp-streamify')
-const source = require('vinyl-source-stream')
+const gulp = require('gulp');
+const sass = require('gulp-sass');
+const uglify = require('gulp-uglify');
+const rename = require('gulp-rename');
+const streamify = require('gulp-streamify');
+const source = require('vinyl-source-stream');
 
-const budo = require('budo')
-const browserify = require('browserify')
+const budo = require('budo');
+const browserify = require('browserify');
 const resetCSS = require('node-reset-scss').includePath
-const glslify = require('glslify')
+const glslify = require('glslify');
 const babelify = require('babelify').configure({
   presets: ['es2015']
-})
+});
+const rollupify = require('rollupify');
 
-const entry = './src/js/index.js'
-const outfile = 'bundle.js'
+const entry = './src/js/index.js';
+const outfile = 'bundle.js';
+const outputFoldername = 'src01';
+const inlinesource = require('gulp-inline-source');
+
 
 
 //our CSS pre-processor
@@ -26,8 +30,8 @@ gulp.task('sass', function() {
       outputStyle: argv.production ? 'compressed' : undefined,
       includePaths: [ resetCSS ]
     }).on('error', sass.logError))
-    .pipe(gulp.dest('./app'))
-})
+    .pipe(gulp.dest('./app'));
+});
 
 //the development task
 gulp.task('watch', function(cb) {
@@ -45,8 +49,8 @@ gulp.task('watch', function(cb) {
         glslify
       ]
     }
-  }).on('exit', cb)
-})
+  }).on('exit', cb);
+});
 
 //the distribution bundle task
 gulp.task('bundle', function() {
@@ -55,9 +59,30 @@ gulp.task('bundle', function() {
           config: 'rollup.config.js'
       }).bundle();
 
-  return bundler
-    .pipe(source('index.js'))
-    .pipe(streamify(uglify()))
-    .pipe(rename(outfile))
-    .pipe(gulp.dest('./app'))
-})
+  if(argv.public){
+       bundler
+        .pipe(source('index.js'))
+        .pipe(streamify(uglify()))
+        .pipe(rename(outfile))
+        .pipe(gulp.dest('./app'));
+
+       var output =  './public/' + outputFoldername;
+       gulp.src('./app/index.html')
+          .pipe(inlinesource())
+          .pipe(gulp.dest(output));
+
+       gulp.src('./app/bundle.js')
+          .pipe(gulp.dest(output));
+
+      return;
+  }else{
+      return bundler
+        .pipe(source('index.js'))
+        .pipe(streamify(uglify()))
+        .pipe(rename(outfile))
+        .pipe(gulp.dest('./app'));
+
+  }
+});
+
+

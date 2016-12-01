@@ -10,8 +10,9 @@
     "url": "https://github.com/mattdesl"
   },
   "dependencies": {
-    "dat-gui": "*",
+    "dat.gui": "dataarts/dat.gui",
     "gsap": "^1.19.0",
+    "ouioui": "wearekuva/oui",
     "stats.js": "mrdoob/stats.js",
     "three": "mrdoob/three.js#dev"
   },
@@ -22,6 +23,7 @@
     "budo": "^9.0.0",
     "glslify": "^5.1.0",
     "gulp": "*",
+    "gulp-inline-source": "^3.0.0",
     "gulp-rename": "*",
     "gulp-sass": "*",
     "gulp-streamify": "*",
@@ -37,7 +39,8 @@
     "test": "node test.js",
     "open": "gulp watch --open",
     "start": "gulp watch",
-    "build": "gulp bundle --production"
+    "build": "gulp bundle --production",
+    "public": "gulp bundle --production --public"
   },
   "keywords": [
     "budo",
