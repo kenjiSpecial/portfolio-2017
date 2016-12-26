@@ -1,17 +1,17 @@
 'use strict';
 
-import App from './app';
+// import App from './app';
+import App from './orthoApp';
 let app;
 
-
-(() => {
+(() =>{
     init();
     start();
 })();
 
-function init() {
+function init(){
     app = new App({
-        isDebug : true
+        isDebug: true
     });
 
     document.body.appendChild(app.dom);
