@@ -1,6 +1,6 @@
 'use strict';
 
-import  {OrthographicCamera, Scene, WebGLRenderer, PlaneGeometry, Clock, ShaderMaterial, Mesh, MeshBasicMaterial} from 'three';
+import  { RawShaderMaterial, OrthographicCamera, Scene, WebGLRenderer, PlaneGeometry, Clock, ShaderMaterial, Mesh, MeshBasicMaterial} from 'three';
 var dat = require('./lib/dat.gui');
 
 const TweenMax = require('gsap');
@@ -10,9 +10,7 @@ const Stats = require('stats.js');
 export default class App {
     constructor(params){
         this.params = params || {};
-        // this.camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
         this.camera = new OrthographicCamera( -window.innerWidth/2, window.innerWidth/2, window.innerHeight/2, -window.innerHeight/2, 0, 10000);
-        // this.camera.position.z = 1000;
 
         this.scene = new Scene();
 
@@ -41,7 +39,11 @@ export default class App {
     
     createMesh(){
         let geo = new PlaneGeometry(1, 1);
-        let mat = new MeshBasicMaterial({color : 0xff0000});
+        let mat = new RawShaderMaterial({
+            vertexShader : glslify('./shaders/rawShader/shader.vert'),
+            fragmentShader : glslify('./shaders/rawShader/shader.frag'),
+        });
+
         let mesh = new Mesh(geo, mat);
         return mesh;
     }
