@@ -1,7 +1,8 @@
 'use strict';
 
 import  {PerspectiveCamera, Scene, WebGLRenderer, BoxGeometry, Clock, ShaderMaterial, Mesh} from 'three';
-var dat = require('dat-gui');
+var dat = require('./lib/dat.gui');
+console.log(dat);
 
 const TweenMax = require('gsap');
 const glslify = require('glslify');

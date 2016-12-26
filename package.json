@@ -10,9 +10,7 @@
     "url": "https://github.com/mattdesl"
   },
   "dependencies": {
-    "dat.gui": "dataarts/dat.gui",
     "gsap": "^1.19.0",
-    "ouioui": "wearekuva/oui",
     "stats.js": "mrdoob/stats.js",
     "three": "mrdoob/three.js#dev"
   },
@@ -20,7 +18,7 @@
     "babel-preset-es2015": "^6.18.0",
     "babelify": "*",
     "browserify": "^13.1.0",
-    "budo": "^9.0.0",
+    "budo": "^9.3.0",
     "glslify": "^5.1.0",
     "gulp": "*",
     "gulp-inline-source": "^3.0.0",
