@@ -1,4 +1,7 @@
+#ifdef GL_ES
 precision highp float;
+#endif
+
 
 attribute vec3 position;
 attribute vec2 uv;
