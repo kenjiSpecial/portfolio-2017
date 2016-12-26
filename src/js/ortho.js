@@ -4,10 +4,11 @@ const TweenMax = require('gsap');
 const glslify = require('glslify');
 const THREE = require('three');
 const Stats = require('stats.js');
-const GUI = require('dat-gui').GUI;
+var dat = require('./lib/dat.gui');
 
-var camera, scene, renderer, mouse, stats, geometry, shaderMaterial, mesh, clock;
-var isLoop;
+let camera, scene, renderer, mouse, stats, geometry, shaderMaterial, mesh, clock;
+let isLoop;
+let gui;
 
 (() => {
     init();
@@ -22,7 +23,7 @@ function init() {
     mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(2, 2));;
     scene.add(mesh);
     
-    gui = new GUI();
+    gui = new dat.GUI();
 
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
