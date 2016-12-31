@@ -42,7 +42,7 @@ gulp.task('watch', function(cb) {
     live: true,             // live reload & CSS injection
     dir: 'app',             // directory to serve
     open: argv.open,        // whether to open the browser
-    borserifyArgs : ['-t', '[ rollupify --config rollup.config.js ]'],
+    // borserifyArgs : ['-t', '[ rollupify --config rollup.config.js ]'],
     browserify: {
       transform:[
         babelify,   //browserify transforms
@@ -54,10 +54,10 @@ gulp.task('watch', function(cb) {
 
 //the distribution bundle task
 gulp.task('bundle', function() {
-  var bundler = browserify(entry, { transform: [rollupify, glslify] })
-      .transform('rollupify', {
-          config: 'rollup.config.js'
-      }).bundle();
+  var bundler = browserify(entry, { transform: [babelify, glslify] });
+      // .transform('rollupify', {
+      //     config: 'rollup.config.js'
+      // }).bundle();
 
   if(argv.public){
        bundler
