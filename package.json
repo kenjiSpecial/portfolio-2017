@@ -12,7 +12,8 @@
   "dependencies": {
     "gsap": "^1.19.0",
     "stats.js": "mrdoob/stats.js",
-    "three": "mrdoob/three.js#dev"
+    "three": "mrdoob/three.js#dev",
+    "three-orbit-controls": "^82.1.0"
   },
   "devDependencies": {
     "babel-preset-es2015": "*",

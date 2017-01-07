@@ -1,7 +1,6 @@
 const argv = require('minimist')(process.argv.slice(2));
 
 const gulp = require('gulp');
-const sass = require('gulp-sass');
 const uglify = require('gulp-uglify');
 const rename = require('gulp-rename');
 const streamify = require('gulp-streamify');
@@ -22,17 +21,6 @@ const outputFoldername = 'src01';
 const inlinesource = require('gulp-inline-source');
 
 
-
-//our CSS pre-processor
-gulp.task('sass', function() {
-  gulp.src('./src/sass/main.scss')
-    .pipe(sass({
-      outputStyle: argv.production ? 'compressed' : undefined,
-      includePaths: [ resetCSS ]
-    }).on('error', sass.logError))
-    .pipe(gulp.dest('./app'));
-});
-
 //the development task
 gulp.task('watch', function(cb) {
   //dev server
@@ -42,7 +30,6 @@ gulp.task('watch', function(cb) {
     live: true,             // live reload & CSS injection
     dir: 'app',             // directory to serve
     open: argv.open,        // whether to open the browser
-    // borserifyArgs : ['-t', '[ rollupify --config rollup.config.js ]'],
     browserify: {
       transform:[
         babelify,   //browserify transforms
@@ -55,9 +42,6 @@ gulp.task('watch', function(cb) {
 //the distribution bundle task
 gulp.task('bundle', function() {
   var bundler = browserify(entry, { transform: [babelify, glslify] });
-      // .transform('rollupify', {
-      //     config: 'rollup.config.js'
-      // }).bundle();
 
   if(argv.public){
        bundler

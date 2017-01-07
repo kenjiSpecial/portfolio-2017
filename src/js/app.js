@@ -1,6 +1,9 @@
 'use strict';
 
+const THREE = require('three');
 import  {PerspectiveCamera, Scene, WebGLRenderer, BoxGeometry, Clock, ShaderMaterial, MeshBasicMaterial, Mesh} from 'three';
+const OrbitControls = require('three-orbit-controls')(THREE);
+
 let dat = require('./lib/dat.gui');
 
 const TweenMax = require('gsap');
@@ -30,6 +33,7 @@ export default class App {
         }
 
         this.clock = new Clock();
+        this.control = new OrbitControls(this.camera);
 
         this.resize();
     }
