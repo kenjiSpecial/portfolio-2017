@@ -1,7 +1,8 @@
 'use strict';
 
-import App from './app';
-// import App from './orthoApp';
+// import App from './apps/App';
+import App from './apps/OrthoApp';
+
 let app;
 
 (() =>{

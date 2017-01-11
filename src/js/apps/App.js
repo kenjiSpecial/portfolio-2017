@@ -1,8 +1,10 @@
 'use strict';
 
-import  { RawShaderMaterial, OrthographicCamera, Scene, WebGLRenderer, PlaneGeometry, Clock, ShaderMaterial, Mesh, MeshBasicMaterial} from 'three';
-var dat = require('./lib/dat.gui');
+const THREE = require('three');
+import  {PerspectiveCamera, Scene, WebGLRenderer, BoxGeometry, Clock, ShaderMaterial, MeshBasicMaterial, Mesh} from 'three';
+const OrbitControls = require('three-orbit-controls')(THREE);
 
+const dat = require('dat.gui/build/dat.gui.js');
 const TweenMax = require('gsap');
 const glslify = require('glslify');
 const Stats = require('stats.js');
@@ -10,7 +12,8 @@ const Stats = require('stats.js');
 export default class App {
     constructor(params){
         this.params = params || {};
-        this.camera = new OrthographicCamera( -window.innerWidth/2, window.innerWidth/2, window.innerHeight/2, -window.innerHeight/2, 0, 10000);
+        this.camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 10000);
+        this.camera.position.z = 1000;
 
         this.scene = new Scene();
 
@@ -29,6 +32,7 @@ export default class App {
         }
 
         this.clock = new Clock();
+        this.control = new OrbitControls(this.camera);
 
         this.resize();
     }
@@ -38,13 +42,13 @@ export default class App {
     }
     
     createMesh(){
-        let geo = new PlaneGeometry(1, 1);
-        let mat = new RawShaderMaterial({
-            vertexShader : glslify('./shaders/rawShader/shader.vert'),
-            fragmentShader : glslify('./shaders/rawShader/shader.frag'),
+        let geometry = new BoxGeometry(200, 200, 200);
+        let shaderMaterial = new ShaderMaterial({
+            vertexShader: glslify('../shaders/shader.vert'),
+            fragmentShader: glslify('../shaders/shader.frag')
         });
-
-        let mesh = new Mesh(geo, mat);
+        // let mat = new MeshBasicMaterial({ color : 0xff0000})
+        let mesh = new Mesh(geometry, shaderMaterial);
         return mesh;
     }
 
@@ -53,6 +57,11 @@ export default class App {
     }
 
     loop(){
+        // let delta = this.clock.getDelta();
+
+        this.mesh.rotation.x += 0.01;
+        this.mesh.rotation.y += 0.02;
+
 
         this.renderer.render(this.scene, this.camera);
         if(this.stats) this.stats.update();
@@ -83,13 +92,8 @@ export default class App {
     }
 
     resize(){
-        this.camera.left   = -window.innerWidth/2;
-        this.camera.right  = window.innerWidth/2;
-        this.camera.top    =  window.innerHeight/2;
-        this.camera.bottom = -window.innerHeight/2;
+        this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
-
-        this.mesh.scale.set(window.innerWidth, window.innerHeight, 1);
 
         this.renderer.setSize(window.innerWidth, window.innerHeight);
     }
