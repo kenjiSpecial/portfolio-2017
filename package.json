@@ -25,14 +25,10 @@
     "gulp": "*",
     "gulp-inline-source": "*",
     "gulp-rename": "*",
-    "gulp-sass": "^3.0.0",
     "gulp-streamify": "*",
     "gulp-uglify": "*",
     "minimist": "*",
     "node-reset-scss": "*",
-    "rollup-plugin-babel": "^2.7.1",
-    "rollup-plugin-node-resolve": "*",
-    "rollupify": "^0.3.7",
     "vinyl-source-stream": "*"
   },
   "scripts": {

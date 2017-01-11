@@ -13,7 +13,6 @@ const glslify = require('glslify');
 const babelify = require('babelify').configure({
   presets: ['es2015']
 });
-const rollupify = require('rollupify');
 
 const entry = './src/js/index.js';
 const outfile = 'bundle.js';
