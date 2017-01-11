@@ -41,7 +41,7 @@ gulp.task('watch', function(cb) {
 
 //the distribution bundle task
 gulp.task('bundle', function() {
-  var bundler = browserify(entry, { transform: [babelify, glslify] });
+  var bundler = browserify(entry, { transform: [babelify, glslify] }).bundle();
 
   if(argv.public){
        bundler
