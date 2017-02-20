@@ -32,6 +32,22 @@ export default class AppController {
     doKeyUp(ev){
         if(this.keyboarView) this.keyboarView.doKeyUp(ev);
     }
+    doMouseDown(ev){
+        if(this.keyboarView) this.keyboarView.doMouseDown(ev);
+
+        if(this.model.isAppStart){
+            this._updateDirecotry(ev);
+        }
+    }
+    doMouseUp(ev){
+        if(this.keyboarView) this.keyboarView.doMouseUp(ev);
+    }
+    doRollover(ev){
+        if(this.keyboarView) this.keyboarView.doRollover(ev);
+    }
+    doRollout(ev){
+        if(this.keyboarView) this.keyboarView.doRollout(ev);
+    }
     _updateDirecotry(ev){
         if(this.model.state == "home" && keyboardDirectories[ev.key]){
             this.model.state = keyboardDirectories[ev.key];

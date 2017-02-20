@@ -11,6 +11,7 @@ import AppModel from './models/AppModel';
 import PostEffectScene from './scenes/PostEffectScene';
 import OutputEffectScene from './scenes/OutputEffectScene';
 import Camera from './camera/camera';
+import Hand from './objects/Hand';
 
 const OrbitControls = require('three-orbit-controls')(THREE);
 
@@ -48,7 +49,7 @@ export default class App {
         }
 
         this.clock = new Clock();
-        this.control = new OrbitControls(this.camera);
+        // this.control = new OrbitControls(this.camera);
 
         this.appModel = new AppModel();
         this.appController = new AppController(this.appModel);
@@ -136,6 +137,7 @@ export default class App {
         TweenMax.ticker.addEventListener('tick', this.loop, this);
     }
     loadDone(){
+        console.log('loadDone');
         this.scene.remove(this.initButtons);
         this.initButtons.children.forEach((child)=>{
             child.geometry.dispose();
@@ -143,6 +145,7 @@ export default class App {
         })
 
         this._addKeyboard();
+        this._addHand();
         this._addPostEffectScene();
 
         this.camera.loadDone(this._startApp.bind(this), this.loaderMesh);
@@ -151,6 +154,16 @@ export default class App {
         this.keyboardObject = new KeyBoardObject();
         this.scene.add(this.keyboardObject);
         this.appController.setKeyboardObject(this.keyboardObject)
+    }
+    _addHand(){
+        this.hand = new Hand({
+            geometry : this.loader.geometries['hand'],
+            camera : this.camera,
+            model : this.appModel,
+            controller : this.appController
+        });
+        this.scene.add(this.hand);
+        this.hand.addKeyboard(this.keyboardObject)
     }
     _addPostEffectScene(){
         this._postEffectScene.addTexture(this.loader.textures['about']);
@@ -172,7 +185,11 @@ export default class App {
         this.camera.camerZoomIn(this.createLoadMesh.bind(this), this.loadedCnt);
     }
     loop(){
+
+        let delta = this.clock.getDelta();// * 0.1;
+
         this.camera.update();
+        if(this.hand) this.hand.update(delta);
         this.renderer.render(this.scene, this.camera, this.renderTarget);
         let texture;
         if(this.appModel.state == 'about' || this.appModel.state == 'works'){
@@ -190,6 +207,13 @@ export default class App {
     }
     onMouseMove(mouse){
         this.camera.updateMouse(mouse);
+        if(this.hand) this.hand.mouseMove(mouse, this.camera);
+    }
+    onMouseDown(){
+        if(this.hand) this.hand.mouseDown();
+    }
+    onMouseUp(){
+        if(this.hand) this.hand.mouseUp();
     }
     onKeyDown(ev){
         switch(ev.which){

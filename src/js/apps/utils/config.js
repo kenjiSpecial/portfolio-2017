@@ -18,6 +18,7 @@ export const mainAssets = {
         'ButtonY/main', 'ButtonY/sub0', 'ButtonY/sub1',
         'ButtonBack/main', 'ButtonBack/sub0',
         'ButtonEnter/main', 'ButtonEnter/sub0',
+        'hand',
         'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 'u', 'w', 'x', 'v', 'z',
         'space'
     ],

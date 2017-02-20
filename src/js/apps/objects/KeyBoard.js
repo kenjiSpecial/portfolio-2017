@@ -109,6 +109,89 @@ export default class KeyBoard extends THREE.Object3D {
             })
         });
     }
+    doMouseDown(ev){
+        let value = keyboardMouseDown[ev.key] ? keyboardMouseDown[ev.key] : ev.key;
+
+        this.characterKeys.forEach((characterKeyRow) =>{
+            characterKeyRow.forEach((character) =>{
+                if(Array.isArray(value)){
+                    value.forEach((val) =>{
+                        if(character.name == val){
+                            character.keydown();
+                        }
+                    })
+                }else{
+                    if(character.name == value){
+                        character.keydown();
+                    }
+                }
+
+            })
+        });
+    }
+    doMouseUp(ev){
+        let value = keyboardMouseDown[ev.key] ? keyboardMouseDown[ev.key] : ev.key;
+        if(keyboardDirectories[ev.key] == this.appModel.state) return; //value = undefined;
+
+        this.characterKeys.forEach((characterKeyRow) =>{
+            characterKeyRow.forEach((character) =>{
+                if(Array.isArray(value)){
+                    value.forEach((val) =>{
+                        if(character.name == val){
+                            character.keyup();
+                        }
+                    })
+                }else{
+                    if(character.name == value){
+                        character.keyup();
+                    }
+                }
+
+            })
+        });
+    }
+    doRollover(ev){
+        let value = keyboardMouseDown[ev.key] ? keyboardMouseDown[ev.key] : ev.key;
+
+        this.characterKeys.forEach((characterKeyRow) =>{
+            characterKeyRow.forEach((character) =>{
+                if(Array.isArray(value)){
+                    value.forEach((val) =>{
+                        if(character.name == val){
+                            character.rollover();
+                        }
+                    })
+                }else{
+                    if(character.name == value){
+                        character.rollover();
+                    }
+                }
+
+            })
+        });
+    }
+
+    doRollout(ev){
+        let value = keyboardMouseDown[ev.key] ? keyboardMouseDown[ev.key] : ev.key;
+        if(keyboardDirectories[ev.key] == this.appModel.state) return; //value = undefined;
+
+        this.characterKeys.forEach((characterKeyRow) =>{
+            characterKeyRow.forEach((character) =>{
+                if(Array.isArray(value)){
+                    value.forEach((val) =>{
+                        if(character.name == val){
+                            character.rollout();
+                        }
+                    })
+                }else{
+                    if(character.name == value){
+                        character.rollout();
+                    }
+                }
+
+            })
+        });
+    }
 
     _onUpdateStateChange(){
         //

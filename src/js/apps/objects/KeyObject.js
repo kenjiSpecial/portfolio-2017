@@ -12,6 +12,7 @@ export default class KeyObject extends THREE.Object3D {
 
         this.loader = new Loader();
         this._createMesh();
+        this._addCollisionMesh();
     }
     _createMesh(){
         let mat = new THREE.MeshStandardMaterial({
@@ -26,7 +27,17 @@ export default class KeyObject extends THREE.Object3D {
 
         if(this.name.indexOf('Button') > -1) this._createMultipleMesh(mat);
         else                                 this._createSingleMesh(mat);
+    }
+    _addCollisionMesh(){
+        this.collisionBoxMesh = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshBasicMaterial({color : 0xffff00, wireframe : true, transparent : true, opacity: 0.01 }));
+        this.add(this.collisionBoxMesh);
+        setTimeout(function(){
+            this.collisionBoxMesh.updateMatrixWorld();
+            this.remove(this.collisionBoxMesh);
+        }.bind(this), 0)
 
+
+        this.collisionBoxMesh.parentObject = this;
     }
     _createMultipleMesh(mat){
         this.meshes = {};
@@ -76,7 +87,7 @@ export default class KeyObject extends THREE.Object3D {
         this.isDown = true;
 
         TweenMax.killTweensOf([this.scale]);
-        TweenMax.to(this.scale, 0.3, {y: 0.6, ease: Quint.easeOut});
+        TweenMax.to(this.scale, 0.3, {y: 0.3, ease: Quint.easeOut});
 
     }
     keyup(){

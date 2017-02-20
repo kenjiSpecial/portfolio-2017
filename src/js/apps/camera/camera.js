@@ -47,7 +47,7 @@ export default class Camera extends THREE.PerspectiveCamera {
 
             TweenMax.to(this, this.isDebug ? 0.6 : 0.6, {rad : 120, onUpdate : function(){
             }, onUpdateScope : this, onComplete: callback})
-            TweenMax.to(this, 0.6, {MAX_THETA0: 20/180 * Math.PI, MAX_THETA1: 20/180*Math.PI});
+            TweenMax.to(this, 0.6, {MAX_THETA0: 10/180 * Math.PI, MAX_THETA1: 10/180*Math.PI});
 
         }, onCompleteScope: this, ease:Quint.easeIn });
     }

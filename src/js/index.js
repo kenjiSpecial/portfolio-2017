@@ -17,12 +17,13 @@ function init(){
 
     document.body.appendChild(app.dom);
     document.addEventListener('mousemove', onDocumentMouseMove, false);
+    document.addEventListener('mousedown', onMouseDown, false);
+    document.addEventListener('mouseup', onMouseUp, false);
 }
 
 function start(){
     app.animateIn();
 }
-
 
 function onDocumentMouseMove(event){
     // event.preventDefault();
@@ -31,6 +32,14 @@ function onDocumentMouseMove(event){
     let mouseY = -( event.clientY / window.innerHeight ) * 2 + 1;
 
     app.onMouseMove({x: mouseX, y: mouseY});
+}
+
+function onMouseDown(ev){
+    app.onMouseDown();
+}
+
+function onMouseUp(ev){
+    app.onMouseUp();
 }
 
 window.addEventListener('resize', function(){
