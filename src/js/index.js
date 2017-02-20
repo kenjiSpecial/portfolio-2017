@@ -1,7 +1,7 @@
 'use strict';
 
-// import App from './apps/App';
-import App from './apps/OrthoApp';
+import App from './apps/App';
+// import App from './apps/OrthoApp';
 
 let app;
 
@@ -39,4 +39,8 @@ window.addEventListener('resize', function(){
 
 window.addEventListener('keydown', function(ev){
     app.onKeyDown(ev);
+});
+
+window.addEventListener('keyup', function(ev){
+    app.onKeyUp(ev);
 });

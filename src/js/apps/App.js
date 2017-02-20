@@ -1,7 +1,17 @@
 'use strict';
 
 const THREE = require('three');
-import  {PerspectiveCamera, Scene, WebGLRenderer, BoxGeometry, Clock, ShaderMaterial, MeshBasicMaterial, Mesh} from 'three';
+import {PerspectiveCamera, Scene, WebGLRenderer, Clock} from "three";
+import {initAssets, mainAssets} from "./utils/config";
+import LoaderMesh from './objects/LoaderMesh';
+import Loader from "./loader/Loader";
+import KeyBoardObject from './objects/KeyBoard';
+import AppController from './controller/AppController';
+import AppModel from './models/AppModel';
+import PostEffectScene from './scenes/PostEffectScene';
+import OutputEffectScene from './scenes/OutputEffectScene';
+import Camera from './camera/camera';
+
 const OrbitControls = require('three-orbit-controls')(THREE);
 
 const dat = require('dat.gui/build/dat.gui.js');
@@ -11,19 +21,25 @@ const Stats = require('stats.js');
 
 export default class App {
     constructor(params){
+        this._initAssetLoaded = this._initAssetLoaded.bind(this);
         this.params = params || {};
-        this.camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 10000);
-        this.camera.position.z = 1000;
+        this.camera = new Camera();
 
         this.scene = new Scene();
 
-        this.mesh = this.createMesh();
-        this.scene.add(this.mesh);
-
+        let renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
+        this.renderTarget = new THREE.WebGLRenderTarget(this.params.width, this.params.height, renderTargetParameters);
+        // this.renderTarget.setPixelRatio (  window.devicePixelRatio || 1 )
         this.renderer = new WebGLRenderer({
             antialias: true
         });
+        this.renderer.setClearColor( 0xffffff  );
+        this.renderer.setPixelRatio (  window.devicePixelRatio || 1 )
         this.dom = this.renderer.domElement;
+        this.renderer.sortObjects = true;
+
+        this._postEffectScene = new PostEffectScene(this.renderer);
+        this._outputEffectScene = new OutputEffectScene()
 
         if(this.params.isDebug){
             this.stats = new Stats();
@@ -34,48 +50,147 @@ export default class App {
         this.clock = new Clock();
         this.control = new OrbitControls(this.camera);
 
+        this.appModel = new AppModel();
+        this.appController = new AppController(this.appModel);
+        this.appController.addPostEffectScene(this._postEffectScene);
+        this.appModel.addEventListener('transformToHome', this._transformToHome.bind(this));
+
+        this.loader = new Loader();
+        this.loadedCnt = 0;
+
+        this.isAppStart = false;
+
+
+        this._setLight();
+        this._setHelper();
+
         this.resize();
+
+        this.appModel.addEventListener('stateChange', this._onUpdateStateChange.bind(this));
     }
-    
+    _onUpdateStateChange(){
+        // console.log(this.appModel.prevState);
+        // console.log(this.appModel.state);
+        if(this.appModel.prevState == 'home' && (this.appModel.state == 'about' ||this.appModel.state == 'works') ){
+            this._postEffectScene.startApp(this.appModel.state);
+            this.camera.animateStartAbout();
+
+        }
+    }
+    _setHelper(){
+        let size = 100;
+        let divisions = 100;
+
+        let gridHelper = new THREE.GridHelper( size, divisions );
+        // this.scene.add( gridHelper );
+    }
+    _setLight(){
+        let light0 = new THREE.DirectionalLight( 0xefefff, 1.5 );
+        light0.position.set( 1, 1, 1 ).normalize();
+        this.scene.add( light0 );
+
+        let light2 = new THREE.DirectionalLight( 0xffefef, 1.5 );
+        light2.position.set( -1, -1, -1 ).normalize();
+        this.scene.add( light2 );
+    }
     _addGui(){
         this.gui = new dat.GUI();
     }
-    
-    createMesh(){
-        let geometry = new BoxGeometry(200, 200, 200);
-        let shaderMaterial = new ShaderMaterial({
-            vertexShader: glslify('../shaders/shader.vert'),
-            fragmentShader: glslify('../shaders/shader.frag')
-        });
-        // let mat = new MeshBasicMaterial({ color : 0xff0000})
-        let mesh = new Mesh(geometry, shaderMaterial);
-        return mesh;
-    }
-
     animateIn(){
+        let mat = new THREE.MeshStandardMaterial({
+            color : 0x3F3F3F,
+            roughness : 0,
+            metalness : 0,
+        })
+        this.numMat = mat;
+
+        this.loaderMesh = new LoaderMesh();
+        this.scene.add(this.loaderMesh);
+
+        this.loader.addAssets(initAssets);
+        this.loader.addEventListener ( 'loaded', this._initAssetLoaded );
+
+    }
+    _addInitButtons(){
+        this.initButtons = new THREE.Object3D();
+        this.initButtons.rotation.x = Math.PI/2;
+        this.scene.add(this.initButtons);
+        let mesh = new THREE.Mesh(this.loader.geometries['button'], this.numMat);
+        mesh.position.x = -1.1;
+        this.initButtons.add(mesh)
+        mesh = new THREE.Mesh(this.loader.geometries['button'], this.numMat);
+        mesh.position.x = 1.1;
+        this.initButtons.add(mesh);
+    }
+    _initAssetLoaded(){
+
+        this.loader.removeEventListener ( 'loaded', this._initAssetLoaded );
+        let index = 0;
+
+        this.scene.add(this.loaderMesh);
+        this._addInitButtons();
+
+        this.loader.addAssets(mainAssets);
+        this.createLoadMesh()
+
         TweenMax.ticker.addEventListener('tick', this.loop, this);
     }
+    loadDone(){
+        this.scene.remove(this.initButtons);
+        this.initButtons.children.forEach((child)=>{
+            child.geometry.dispose();
+            child.material.dispose();
+        })
 
-    loop(){
-        // let delta = this.clock.getDelta();
+        this._addKeyboard();
+        this._addPostEffectScene();
 
-        this.mesh.rotation.x += 0.01;
-        this.mesh.rotation.y += 0.02;
-
-
-        this.renderer.render(this.scene, this.camera);
-        if(this.stats) this.stats.update();
-
+        this.camera.loadDone(this._startApp.bind(this), this.loaderMesh);
     }
+    _addKeyboard(){
+        this.keyboardObject = new KeyBoardObject();
+        this.scene.add(this.keyboardObject);
+        this.appController.setKeyboardObject(this.keyboardObject)
+    }
+    _addPostEffectScene(){
+        this._postEffectScene.addTexture(this.loader.textures['about']);
+        this._postEffectScene.addWorkTextures(this.loader.textures);
+    }
+    _startApp(){
 
+        this.appModel.isAppStart = true;
+    }
+    createLoadMesh(){
+        if(this.loader.rate == 100 && this.loadedCnt > 1) {
+            this.loadDone();
+            return;
+        }
+
+        this.loadedCnt++;
+        let percent = this.loader.rate
+        this.loaderMesh.updateMesh(percent, this.loadedCnt);
+        this.camera.camerZoomIn(this.createLoadMesh.bind(this), this.loadedCnt);
+    }
+    loop(){
+        this.camera.update();
+        this.renderer.render(this.scene, this.camera, this.renderTarget);
+        let texture;
+        if(this.appModel.state == 'about' || this.appModel.state == 'works'){
+            this._postEffectScene.render(this.renderer, this.renderTarget.texture);
+            texture = this._postEffectScene.texture;
+        }else{
+            texture = this.renderTarget.texture;
+        }
+
+        this._outputEffectScene.render(this.renderer, texture);
+        if(this.stats) this.stats.update();
+    }
     animateOut(){
         TweenMax.ticker.removeEventListener('tick', this.loop, this);
     }
-
     onMouseMove(mouse){
-
+        this.camera.updateMouse(mouse);
     }
-
     onKeyDown(ev){
         switch(ev.which){
             case 27:
@@ -89,17 +204,29 @@ export default class App {
                 }
                 break;
         }
+        this.appController.doKeyDown(ev);
     }
-
+    onKeyUp(ev){
+        this.appController.doKeyUp(ev);
+    }
     resize(){
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
 
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-    }
+        this.renderTarget.setSize(window.innerWidth, window.innerHeight);
 
+        this._outputEffectScene.resize();
+        this._postEffectScene.resize();
+    }
+    _transformToHome(){
+        if(this.appModel.state == 'home') return;
+
+        if(this.appModel.state == 'about' || this.appModel.state == 'works'){
+            this._postEffectScene.backToHome();
+        }
+    }
     destroy(){
 
     }
-
 }

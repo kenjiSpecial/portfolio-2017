@@ -11,10 +11,12 @@
   },
   "dependencies": {
     "dat.gui": "github:dataarts/dat.gui",
+    "glsl-noise": "0.0.0",
     "gsap": "^1.19.0",
     "stats.js": "mrdoob/stats.js",
     "three": "mrdoob/three.js#dev",
-    "three-orbit-controls": "^82.1.0"
+    "three-orbit-controls": "^82.1.0",
+    "three-shader-fxaa": "^5.1.1"
   },
   "devDependencies": {
     "babel-preset-es2015": "*",
