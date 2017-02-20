@@ -24,6 +24,11 @@ export const mainAssets = {
     ],
     images : [
         {name : 'about', src : './images/about.jpg'},
+        {name : 'about0', src : './images/about0.jpg'},
+        {name : 'about1', src : './images/about1.jpg'},
+        {name : 'about2', src : './images/about2.jpg'},
+        {name : 'about3', src : './images/about3.jpg'},
+        {name : 'about4', src : './images/about4.jpg'},
         {name : 'capitolcouture', src : './images/capitolcouture.jpg'},
         {name : 'sheepinator', src : './images/sheepinator.jpg'},
         {name : 'xfile', src : './images/xfile.jpg'},
@@ -76,4 +81,12 @@ export const works = [
     {name : 'xfile', url: 'http://archive.kenji-special.info/2016/01/x-files'},
     {name : 'capitolcouture', url: 'http://archive.kenji-special.info/2015/11/capitol-couture'},
     {name : 'more', url: 'http://archive.kenji-special.info/'},
+]
+
+export const aboutData = [
+    'about0',
+    'about1',
+    'about2',
+    'about3',
+    'about4'
 ]

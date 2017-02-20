@@ -166,8 +166,9 @@ export default class App {
         this.hand.addKeyboard(this.keyboardObject)
     }
     _addPostEffectScene(){
-        this._postEffectScene.addTexture(this.loader.textures['about']);
+        this._postEffectScene.addAboutTextures(this.loader.textures);
         this._postEffectScene.addWorkTextures(this.loader.textures);
+        this._postEffectScene.resize();
     }
     _startApp(){
 

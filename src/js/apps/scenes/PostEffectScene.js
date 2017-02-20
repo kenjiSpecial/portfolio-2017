@@ -1,13 +1,15 @@
 "use strict";
 const THREE = require('three');
 const glslify = require('glslify');
-import {works} from '../utils/config';
+import {works, aboutData} from '../utils/config';
 import AppModel from '../models/AppModel'
 
 export default class PostEffectScene extends THREE.Scene {
     constructor(renderer) {
         super()
         this._onWorkChange = this._onWorkChange.bind(this);
+        this._onAboutChange = this._onAboutChange.bind(this);
+
         this.renderer = renderer;
         this.appModel = new AppModel();
         this.appModel.addEventListener('stateChange', this._onStateChagne.bind(this));
@@ -35,20 +37,62 @@ export default class PostEffectScene extends THREE.Scene {
         this.add(this.planeMesh);
 
     }
-    addTexture(texture){
+    addAboutTextures(textures){
+        this.renderTargetAbouts = [];
+
         this.aboutCamera = new THREE.OrthographicCamera( 1 / - 2, 1 / 2, 1 / 2, 1 / - 2, 0.1, 1000 );
         this.aboutCamera.position.z = 10;
+
+        aboutData.forEach((about)=>{
+            let scene = new THREE.Scene();
+            let mesh = new THREE.Mesh(
+                new THREE.PlaneGeometry(textures[about].image.width, textures[about].image.height ),
+                new THREE.MeshBasicMaterial({map : textures[about]})
+            );
+            scene.add(mesh);
+
+            let rendertargetparameters = { minfilter: THREE.nearestfilter, magfilter: THREE.nearestfilter, format: THREE.rgbaformat, stencilbufer: false };
+            let rendertarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, rendertargetparameters);
+            this.renderer.render(scene, this.aboutCamera, rendertarget);
+
+            this.renderTargetAbouts.push({scene : scene,  rendertarget: rendertarget});
+        })
+
+
+
         this.aboutScene = new THREE.Scene();
 
         let rendertargetparameters = { minfilter: THREE.nearestfilter, magfilter: THREE.nearestfilter, format: THREE.rgbaformat, stencilbufer: false };
-        this.aboutRenderTarget =  new THREE.WebGLRenderTarget(1, 1, rendertargetparameters);
+        this.aboutRenderTarget =  new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, rendertargetparameters);
 
-        let width = 400;//this.texture.image.width;
-        let height =400;//
-        this.aboutPlane = new THREE.Mesh(new THREE.PlaneGeometry(width, height), new THREE.MeshBasicMaterial({map: texture}));
-        this.aboutScene.add(this.aboutPlane);
+        let noise1 = textures['pnoise'];
+        let noise2 = textures['pnoise2'];
+        let noise3 = textures['pnoise3'];
 
-        this.resize();
+        let mat = new THREE.ShaderMaterial({
+            uniforms : {
+                noise1 : {value : noise1},
+                noise2 : {value : noise2},
+                noise3 : {value : noise3},
+                bgTexture : {value : null },
+                bgTexture1 : {value : null },
+                uTime : {value: 1},
+                uTime2 : {value: 0},
+                uColorDiffuse : {value: 10},
+                curTime : {value : 0},
+                uBalance : {value: 0}
+            },
+            vertexShader : glslify('../../shaders/works.vert'),
+            fragmentShader : glslify('../../shaders/works.frag'),
+            transparent : true
+
+        })
+
+        let plane = new THREE.PlaneGeometry(1, 1);
+        this.aboutMesh = new THREE.Mesh(plane, mat);
+        this.aboutScene.add(this.aboutMesh);
+
+        // this.resize();
     }
     addWorkTextures(textures){
         this.renderTargets = [];
@@ -102,14 +146,24 @@ export default class PostEffectScene extends THREE.Scene {
     startApp(state){
         let value = 1;
         if(state == "about"){
-            this.renderer.render(this.aboutScene, this.aboutCamera, this.aboutRenderTarget);
+            TweenMax.killTweensOf([this.aboutMesh.material.uniforms.uTime, this.aboutMesh.material.uniforms.uColorDiffuse]);
+
+            this.curAboutTexture = this.renderTargetAbouts[ this.appModel.aboutNum || 0].rendertarget.texture;
+            this.aboutMesh.material.uniforms.bgTexture.value = this.curAboutTexture;
+            TweenMax.fromTo(this.aboutMesh.material.uniforms.uTime, 1.2, {value: 1}, {value: 0, ease: Quint.easeOut})
+            TweenMax.fromTo(this.aboutMesh.material.uniforms.uColorDiffuse, 2, {value: 30}, {value: 0.5})
+
+            this.aboutCount = 0;
+            this.aboutMesh.material.uniforms.uBalance.value = 0;
+
+            this.appModel.addEventListener('aboutChange', this._onAboutChange);
         }else{
 
             TweenMax.killTweensOf([this.worksMesh.material.uniforms.uTime, this.worksMesh.material.uniforms.uColorDiffuse]);
 
             this.curWorkTexture = this.renderTargets[ this.appModel.workNum].rendertarget.texture;
             this.worksMesh.material.uniforms.bgTexture.value = this.curWorkTexture;
-            TweenMax.fromTo(this.worksMesh.material.uniforms.uTime, 1.6, {value: 1}, {value: 0, ease: Quint.easeInOut})
+            TweenMax.fromTo(this.worksMesh.material.uniforms.uTime, 1.8, {value: 1}, {value: 0, ease: Quint.easeInOut})
             TweenMax.fromTo(this.worksMesh.material.uniforms.uColorDiffuse, 2, {value: 30}, {value: 0.5})
             this.count = 0;
             this.worksMesh.material.uniforms.uBalance.value = 0;
@@ -136,6 +190,9 @@ export default class PostEffectScene extends THREE.Scene {
             this.dispatchEvent({type : 'backToHome'});
         }, onCompleteScope : this});
     }
+    _onAboutChange(){
+
+    }
     _onWorkChange(){
         this.count++;
         TweenMax.killTweensOf([this.worksMesh.material.uniforms.uBalance]);
@@ -151,6 +208,8 @@ export default class PostEffectScene extends THREE.Scene {
 
         this.planeMesh.material.uniforms.tDiffuse.value = texture;
         if(this.appModel.state == 'about'){
+            this.aboutMesh.material.uniforms.uTime2.value += 1/60;
+            this.renderer.render(this.aboutScene, this.camera, this.aboutRenderTarget);
             this.planeMesh.material.uniforms.tBase.value = this.aboutRenderTarget.texture;
         }else{
             this.worksMesh.material.uniforms.uTime2.value += 1/60;
@@ -183,12 +242,16 @@ export default class PostEffectScene extends THREE.Scene {
         this.rendertarget.setSize(window.innerWidth, window.innerHeight);
         if(this.renderTargets){
             this.renderTargets.forEach((renderTarget)=>{
+                renderTarget.rendertarget.setSize(window.innerWidth, window.innerHeight);
                 this.renderer.render( renderTarget.scene, this.aboutCamera, renderTarget.rendertarget );
             })
         }
 
-        if(this.appModel.state == 'about'){
-            this.renderer.render(this.aboutScene, this.aboutCamera, this.aboutRenderTarget);
+        if(this.aboutRenderTarget){
+            this.renderTargetAbouts.forEach((renderTarget)=>{
+                renderTarget.rendertarget.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.render( renderTarget.scene, this.aboutCamera, renderTarget.rendertarget );
+            })
         }
 
     }
