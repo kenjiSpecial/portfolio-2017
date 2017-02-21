@@ -7,7 +7,7 @@ export const initAssets = {
 export const mainAssets = {
     base : './models',
     json : [
-        'ButtonCol/main', 'ButtonCol/sub0', 'ButtonCol/sub0',
+        'ButtonCol/main', 'ButtonCol/sub0', 'ButtonCol/sub1',
         'ButtonD/main', 'ButtonD/sub0', 'ButtonD/sub1',
         'ButtonE/main', 'ButtonE/sub0', 'ButtonE/sub1',
         'ButtonF/main', 'ButtonF/sub0', 'ButtonF/sub1',
@@ -16,8 +16,13 @@ export const mainAssets = {
         'ButtonS/main', 'ButtonS/sub0', 'ButtonS/sub1',
         'ButtonT/main', 'ButtonT/sub0', 'ButtonT/sub1',
         'ButtonY/main', 'ButtonY/sub0', 'ButtonY/sub1',
+        'ButtonComma/main', 'ButtonComma/sub0', 'ButtonComma/sub1',
+        'ButtonSlash/main', 'ButtonSlash/sub0', 'ButtonSlash/sub1',
+        'ButtonPeriod/main', 'ButtonPeriod/sub0', 'ButtonPeriod/sub1',
         'ButtonBack/main', 'ButtonBack/sub0',
         'ButtonEnter/main', 'ButtonEnter/sub0',
+        'ButtonNext/main', 'ButtonNext/sub0',
+        'ButtonPrev/main', 'ButtonPrev/sub0',
         'hand',
         'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 'u', 'w', 'x', 'v', 'z',
         'space'
@@ -40,12 +45,15 @@ export const mainAssets = {
     mesh : []
 };
 
+let delX = -1.3;
 export const characters =[
-    {x: -14, z: -4.4, characters : ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'button', 'button', 'ButtonBack']},
-    {x: -13, z: -2.2, characters : ['q', 'w', 'ButtonE', 'r', 'ButtonT', 'ButtonY', 'u', 'i', 'o', 'p']},
-    {x: -2.2 * 5 - 1.1, z: 0, characters : ['a', 'ButtonS', 'ButtonD', 'ButtonF', 'ButtonG', 'h', 'j', 'k', 'l', 'ButtonCol', 'ButtonHi', 'ButtonEnter']},
-    {x: -11, z: 2.2, characters : ['z', 'x', 'c', 'v', 'b', 'n', 'm', 'k', 'l' ]},
-    {x: -2.2, z: 4.4, characters : ['space' ]}
+    {x: -14 + delX, z: -4.4, characters : ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'button', 'button', 'ButtonBack']},
+    {x: -13 + delX, z: -2.2, characters : ['q', 'w', 'ButtonE', 'r', 'ButtonT', 'ButtonY', 'u', 'i', 'o', 'p']},
+    {x: -2.2 * 5 - 1.1 + delX, z: 0, characters : ['a', 'ButtonS', 'ButtonD', 'ButtonF', 'ButtonG', 'h', 'j', 'k', 'l', 'ButtonCol', 'ButtonHi', 'ButtonEnter']},
+    {x: -11+ delX, z: 2.2, characters : ['z', 'x', 'c', 'v', 'b', 'n', 'm',  'ButtonComma', 'ButtonPeriod', 'ButtonSlash']},
+    {x: -2.2+ delX, z: 4.4, characters : ['space' ]},
+    {x: 12.1+ delX, z: 2.2, characters : ['button' ]},
+    {x: 9.9+ delX, z: 4.4, characters : [ 'ButtonPrev', 'button', 'ButtonNext' ]}
 ];
 
 export const keyboardMouseDown = {
@@ -59,6 +67,13 @@ export const keyboardMouseDown = {
     'r' : ['w', 'e', 'r', 't', 'y'],
     't' : ['w', 'e', 'r', 't', 'y'],
     'y' : ['w', 'e', 'r', 't', 'y'],
+    'l' : ['l', 'col', 'hi'],
+    'col' : ['l', 'col', 'hi'],
+    'hi' : ['l', 'col', 'hi'],
+    'm' : ['m', 'period', 'comma', 'slash'],
+    'period' : ['m', 'period', 'comma', 'slash'],
+    'comma' : ['m', 'period', 'comma', 'slash'],
+    'slash' : ['m', 'period', 'comma', 'slash'],
 }
 
 export const keyboardDirectories = {

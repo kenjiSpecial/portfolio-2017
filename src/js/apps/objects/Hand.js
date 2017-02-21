@@ -15,8 +15,11 @@ export default class Hand extends THREE.Object3D {
 
         this._isRollover = false;
         this.isPrevRollover = false;
+        this.visible = false;
+        this.isActive  = false;
 
         this._createHand();
+        this.model.addEventListener('stateChange', this._onStateChange.bind(this));
     }
     _createHand(){
 
@@ -57,6 +60,14 @@ export default class Hand extends THREE.Object3D {
 
         this.collidableMeshList = [];
 
+    }
+    animateIn(){
+        this.visible = true;
+        TweenMax.fromTo(this.mesh.material, 1, {opacity : 0.01}, {opacity : 1, onUpdate : function(){
+            if(this.mouse && this.camera) this.mouseMove(this.mouse, this.camera);
+        }, onUpdateScope : this, ease : Quint.easeOut, onComplete : function(){
+            this.isActive = true;
+        }, onCompleteScope: this});
     }
     getBoneList(object){
 
@@ -133,7 +144,7 @@ export default class Hand extends THREE.Object3D {
             }
         }
 
-        this._updateRollOver(isRollover, collidedObject);
+        if(this.isActive) this._updateRollOver(isRollover, collidedObject);
 
 
     }
@@ -167,6 +178,7 @@ export default class Hand extends THREE.Object3D {
     }
     mouseMove(mouse, camera){
         this.camera = camera;
+        this.mouse = mouse;
         let vector = new THREE.Vector3(
                 mouse.x,
                 mouse.y,
@@ -221,7 +233,7 @@ export default class Hand extends THREE.Object3D {
         this.isNotRolloutable = true;
         this.isNotRolloutableTimer = setTimeout(()=>{this.isNotRolloutable = false;},500)
 
-        if(this.collidedObject.parentObject && this.collidedObject.parentObject.name){
+        if(this.collidedObject && this.collidedObject.parentObject && this.collidedObject.parentObject.name){
             this.controller.doMouseDown({key: this.collidedObject.parentObject.name})
             this.mouseDownObject = this.collidedObject;
         }
@@ -237,6 +249,12 @@ export default class Hand extends THREE.Object3D {
 
         if(this.mouseDownObject){
             this.controller.doMouseUp({key: this.mouseDownObject.parentObject.name})
+        }
+    }
+    _onStateChange(){
+        if(this.model.state == "home"){
+            this.prevCollidedObject = this.collidedObject;
+            this.collidedObject = null;
         }
     }
     get isRollover(){

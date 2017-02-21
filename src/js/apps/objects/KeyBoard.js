@@ -9,8 +9,14 @@ import KeyObjectAbout from './KeyObjectAbout'
 import KeyObjectWorks from './KeyObjectWorks'
 import KeyObjectNumber from './KeyObjectNumber';
 import KeyObjectEnter from './KeyObjectEnter';
+import KeyObjectArrow from './KeyObjectArrow';
+import KeyObjectLab from './KeyObjectLab'
+import KeyObjectMore from './KeyObjectMore';
+import KeyObjectSns from './KeyObjectSns';
+import KeyObjectSpace from './KeyObjectSpace';
 import {keyboardMouseDown, keyboardDirectories} from '../utils/config'
 import AppModel from '../models/AppModel';
+
 
 export default class KeyBoard extends THREE.Object3D {
     constructor(){
@@ -44,18 +50,30 @@ export default class KeyBoard extends THREE.Object3D {
     getKeyObject(chara){
         let keyObject;
 
-        if(chara == "ButtonBack") {
-            keyObject = new KeyObjectBack({name : chara});
+        if(chara == "ButtonBack"){
+            keyObject = new KeyObjectBack({name: chara});
             this.buttonBackView = keyObject;
         }
         else if(chara == 'a' || chara == 'ButtonS' || chara == 'ButtonD' || chara == 'ButtonF' || chara == 'ButtonG'){
-            keyObject = new KeyObjectAbout({name : chara});
-        }else if( chara == 'w' || chara == 'ButtonE' || chara == 'r' || chara == 'ButtonT' || chara == 'ButtonY'){
-            keyObject = new KeyObjectWorks({name : chara});
-        } else if( chara == '1' || chara == '2' || chara == '3' || chara == '4' || chara == '5' || chara == '6' || chara == '7' || chara == '8' || chara == '9'){
-            keyObject = new KeyObjectNumber({name : chara});
+            keyObject = new KeyObjectAbout({name: chara});
+        }else if(chara == 'w' || chara == 'ButtonE' || chara == 'r' || chara == 'ButtonT' || chara == 'ButtonY'){
+            keyObject = new KeyObjectWorks({name: chara});
+        }else if(chara == '1' || chara == '2' || chara == '3' || chara == '4' || chara == '5' || chara == '6' || chara == '7' || chara == '8' || chara == '9'){
+            keyObject = new KeyObjectNumber({name: chara});
+        }else if( chara == 'l' || chara == 'ButtonHi' || chara == 'ButtonCol'){
+            keyObject = new KeyObjectLab({name : chara});
         }else if(chara == 'ButtonEnter'){
-            keyObject = new KeyObjectEnter({name : chara})
+            keyObject = new KeyObjectEnter({name: chara})
+        }else if(chara == 'm' || chara == 'ButtonComma' || chara == 'ButtonPeriod' || chara == 'ButtonSlash'){
+            keyObject = new KeyObjectMore({name : chara});
+        }else if(chara == 'z' || chara == 'x' || chara == 'c'){
+            keyObject = new KeyObjectSns({name : chara});
+        }else if(chara == 'ButtonNext' || chara == 'ButtonPrev'){
+            keyObject = new KeyObjectArrow({name: chara});
+            if(chara == 'ButtonNext') this.nextButtonView = keyObject;
+            else                      this.prevButtonView = keyObject;
+        }else if(chara == 'space'){
+            keyObject = new KeyObjectSpace({name: chara})
         }else{
             keyObject = new KeyObject({name: chara});
         }
@@ -109,6 +127,7 @@ export default class KeyBoard extends THREE.Object3D {
             })
         });
     }
+
     doMouseDown(ev){
         let value = keyboardMouseDown[ev.key] ? keyboardMouseDown[ev.key] : ev.key;
 
@@ -129,6 +148,7 @@ export default class KeyBoard extends THREE.Object3D {
             })
         });
     }
+
     doMouseUp(ev){
         let value = keyboardMouseDown[ev.key] ? keyboardMouseDown[ev.key] : ev.key;
         if(keyboardDirectories[ev.key] == this.appModel.state) return; //value = undefined;
@@ -150,6 +170,7 @@ export default class KeyBoard extends THREE.Object3D {
             })
         });
     }
+
     doRollover(ev){
         let value = keyboardMouseDown[ev.key] ? keyboardMouseDown[ev.key] : ev.key;
 

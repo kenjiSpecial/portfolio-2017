@@ -157,6 +157,7 @@ export default class PostEffectScene extends THREE.Scene {
             this.aboutMesh.material.uniforms.uBalance.value = 0;
 
             this.appModel.addEventListener('aboutChange', this._onAboutChange);
+            // this.appModel.aboutAutoUpdate();
         }else{
 
             TweenMax.killTweensOf([this.worksMesh.material.uniforms.uTime, this.worksMesh.material.uniforms.uColorDiffuse]);
@@ -175,8 +176,10 @@ export default class PostEffectScene extends THREE.Scene {
     }
     _onStateChagne(){
         if(this.appModel.prevState == 'works') {
-
             this.appModel.removeEventListener('workChange', this._onWorkChange);
+        }else if(this.appModel.prevState == 'about'){
+            this.appModel.removeEventListener('aboutChange', this._onAboutChange);
+            // this.appModel.aboutAutoUpdateDisable();
         }
     }
     backToHome(){
@@ -191,7 +194,15 @@ export default class PostEffectScene extends THREE.Scene {
         }, onCompleteScope : this});
     }
     _onAboutChange(){
-
+        this.aboutCount++;
+        TweenMax.killTweensOf([this.aboutMesh.material.uniforms.uBalance]);
+        if(this.aboutCount % 2 == 0 ){
+            this.aboutMesh.material.uniforms.bgTexture.value = this.renderTargetAbouts[ this.appModel.aboutNum].rendertarget.texture;
+            TweenMax.to(this.aboutMesh.material.uniforms.uBalance, 1.0, {value : 0, ease: Quint.easeOut});
+        }else{
+            this.aboutMesh.material.uniforms.bgTexture1.value = this.renderTargetAbouts[ this.appModel.aboutNum].rendertarget.texture;
+            TweenMax.to(this.aboutMesh.material.uniforms.uBalance, 1.0, {value : 1, ease: Quint.easeOut});
+        }
     }
     _onWorkChange(){
         this.count++;

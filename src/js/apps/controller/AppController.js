@@ -10,9 +10,17 @@ export default class AppController {
         this.keyboarView = keyboardVeiw;
 
         this.keyboarView.buttonBackView.addEventListener('backToHome', this._onBackToHome.bind(this));
+        this.keyboarView.nextButtonView.addEventListener('update', this._updateIncrease.bind(this));
+        this.keyboarView.prevButtonView.addEventListener('update', this._updateDecrease.bind(this));
     }
     _onBackToHome(){
         this.model.transformToHome();
+    }
+    _updateIncrease(){
+        this.model.updateIncrease();
+    }
+    _updateDecrease(){
+        this.model.updateDecrease();
     }
     doKeyDown(ev){
         if(this.keyboarView) this.keyboarView.doKeyDown(ev);

@@ -26,6 +26,24 @@ export default class KeyObjectAbout extends KeyObject {
         this.baseRate = 1;
         this._updateColor();
     }
+    _addCollisionMesh(){
+        if(this.name == 'd'){
+            this.collisionBoxMesh = new THREE.Mesh(new THREE.BoxGeometry(2.2 * 5 - 0.4, 2, 2), new THREE.MeshBasicMaterial({
+                color: 0xffff00,
+                wireframe: true,
+                // transparent: true,
+                // opacity: 0.01
+            }));
+            this.add(this.collisionBoxMesh);
+            setTimeout(function(){
+                this.collisionBoxMesh.updateMatrixWorld();
+                this.remove(this.collisionBoxMesh);
+            }.bind(this), 0)
+
+
+            this.collisionBoxMesh.parentObject = this;
+        }
+    }
     select(){
         super.select();
         TweenMax.to(this, 1, {delay: 0.7, colorRate : 1, onUpdate: this._updateColor, onUpdateScope: this})
@@ -77,7 +95,7 @@ export default class KeyObjectAbout extends KeyObject {
         }
     }
     _appStartChange(){
-        TweenMax.to(this, 1, {baseRate : 0, onUpdate: this._updateColor, onUpdateScope: this, ease: Quint.easeInOut})
+        TweenMax.to(this, 1, {baseRate : 0, onUpdate: this._updateColor, onUpdateScope: this, ease: Quint.easeOut})
     }
     _stateChange(){
         if(this.appModel.state !== "about" && this.appModel.state != 'home'){

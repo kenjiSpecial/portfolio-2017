@@ -29,7 +29,7 @@ export default class KeyObject extends THREE.Object3D {
         else                                 this._createSingleMesh(mat);
     }
     _addCollisionMesh(){
-        this.collisionBoxMesh = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshBasicMaterial({color : 0xffff00, wireframe : true, transparent : true, opacity: 0.01 }));
+        this.collisionBoxMesh = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshBasicMaterial({color : 0xffff00, wireframe : true }));
         this.add(this.collisionBoxMesh);
         setTimeout(function(){
             this.collisionBoxMesh.updateMatrixWorld();
@@ -78,7 +78,7 @@ export default class KeyObject extends THREE.Object3D {
             TweenMax.to(this.meshes['sub0'].scale, 0.6, {y: 0.01, onComplete : function(){
                 this.meshes['sub0'].visible = false;
             }, onCompleteScope: this, ease: Quint.easeOut });
-            TweenMax.to(this.meshes['sub0'].material, 0.6, {opacity: 0, ease: Quint.easeOut});
+            TweenMax.to(this.meshes['sub0'].material, 0.6, {opacity: 0.01, ease: Quint.easeOut});
         }
     }
     keydown(){

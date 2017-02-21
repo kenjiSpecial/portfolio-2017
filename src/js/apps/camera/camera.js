@@ -36,7 +36,7 @@ export default class Camera extends THREE.PerspectiveCamera {
         let targetRad =  60/Math.pow(30, loadedCnt);
         TweenMax.to(this, this.isDebug ? 1 : 1.2, {rad: targetRad, delay: 0.1, onComplete: callBack, ease: Quint.easeInOut });
     }
-    loadDone(callback, loaderMesh){
+    loadDone(callback, callback2, loaderMesh){
 
         TweenMax.to(this, this.isDebug ? 2 : 2, { loadedCnt: 0, onUpdate : function(){
             this.rad = 60/Math.pow(30, (this.loadedCnt));
@@ -44,6 +44,7 @@ export default class Camera extends THREE.PerspectiveCamera {
             this.near = 2;
             this.updateProjectionMatrix();
             loaderMesh.destroy();
+            if(callback2) callback2();
 
             TweenMax.to(this, this.isDebug ? 0.6 : 0.6, {rad : 120, onUpdate : function(){
             }, onUpdateScope : this, onComplete: callback})

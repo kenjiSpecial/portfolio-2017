@@ -124,6 +124,7 @@ export default class App {
         this.initButtons.add(mesh);
     }
     _initAssetLoaded(){
+        TweenMax.to(this.dom, 1.2, {opacity: 1, ease: Quint.easeOut});
 
         this.loader.removeEventListener ( 'loaded', this._initAssetLoaded );
         let index = 0;
@@ -137,7 +138,6 @@ export default class App {
         TweenMax.ticker.addEventListener('tick', this.loop, this);
     }
     loadDone(){
-        console.log('loadDone');
         this.scene.remove(this.initButtons);
         this.initButtons.children.forEach((child)=>{
             child.geometry.dispose();
@@ -148,7 +148,7 @@ export default class App {
         this._addHand();
         this._addPostEffectScene();
 
-        this.camera.loadDone(this._startApp.bind(this), this.loaderMesh);
+        this.camera.loadDone(this._startApp.bind(this), null, this.loaderMesh);
     }
     _addKeyboard(){
         this.keyboardObject = new KeyBoardObject();
@@ -171,7 +171,7 @@ export default class App {
         this._postEffectScene.resize();
     }
     _startApp(){
-
+        this.hand.animateIn();// .bind(this.hand)
         this.appModel.isAppStart = true;
     }
     createLoadMesh(){
@@ -199,7 +199,7 @@ export default class App {
         }else{
             texture = this.renderTarget.texture;
         }
-
+        this._outputEffectScene.update(delta, this.appModel, this.mouse);
         this._outputEffectScene.render(this.renderer, texture);
         if(this.stats) this.stats.update();
     }
@@ -207,6 +207,7 @@ export default class App {
         TweenMax.ticker.removeEventListener('tick', this.loop, this);
     }
     onMouseMove(mouse){
+        this.mouse = mouse;
         this.camera.updateMouse(mouse);
         if(this.hand) this.hand.mouseMove(mouse, this.camera);
     }

@@ -4,25 +4,27 @@ const THREE = require('three');
 import KeyObject from './KeyObject'
 import Loader from '../loader/Loader';
 import AppModel from '../models/AppModel';
-import {works} from '../utils/config';
+import {works, aboutData} from '../utils/config';
 
 export default class KeyObjectNumber extends KeyObject {
     constructor(params) {
         super(params)
 
-        if(parseInt(this.name) < works.length + 1){
-            this.isWork = true;
-        }else{
-            this.isWork = false;
-        }
+        if(parseInt(this.name) < works.length + 1) this.isWork = true;
+        else this.isWork = false;
+
+        if(parseInt(this.name) < aboutData.length + 1) this.isAbout = true;
+        else this.isAbout = false;
+
 
         this.appModel = new AppModel();
         this.appModel.addEventListener('appStartChange', this._appStartChange.bind(this));
-        if(this.isWork){
+        if(this.isWork || this.isAbout){
             this.appModel.addEventListener('transformToHome', this._transformToHome.bind(this));
             this.appModel.addEventListener('stateChange', this._stateChange.bind(this));
-            this.appModel.addEventListener('workChange', this._workChange.bind(this));
-            this.appModel.addEventListener('workChange', this._workChange.bind(this) );
+
+            if(this.isWork) this.appModel.addEventListener('workChange', this._workChange.bind(this));
+            if(this.isAbout) this.appModel.addEventListener('aboutChange', this._aboutChange.bind(this));
         }
     }
     _createMesh(){
@@ -67,15 +69,19 @@ export default class KeyObjectNumber extends KeyObject {
         if(this.appModel.state == 'works' && this.isWork){
             this.appModel.workNum = parseInt(this.name) - 1;
         }
+        if(this.appModel.state == 'about' && this.isAbout){
+            this.appModel.aboutNum = parseInt(this.name) - 1;
+        }
     }
     keyup(){
         if(this.isSelected) return;
         super.keyup();
     }
     _transformToHome(){
-        if(this.appModel.state == "works"){
+        if(this.appModel.state == "works" || this.appModel.state == "about"){
+            // this.colorRate = 0;
             this.unselect();
-            TweenMax.to(this, 1, {baseRate1: 0, onUpdate: this._updateColor, onUpdateScope: this, ease: Quint.easeInOut})
+            TweenMax.to(this, 1, {baseRate1: 0, onUpdate: this._updateColor, onUpdateScope: this, onComplete : function(){ this.colorRate = 0; }, onCompleteScope : this, ease: Quint.easeInOut})
         }else{
             TweenMax.to(this, 1, {baseRate : 0, onUpdate: this._updateColor, onUpdateScope: this, ease: Quint.easeInOut })
         }
@@ -85,9 +91,9 @@ export default class KeyObjectNumber extends KeyObject {
     }
     _stateChange(){
 
-        if(this.appModel.state !== "works"&& this.appModel.state != 'home'){
+        if( (this.appModel.state !== "works" && this.appModel.state !== "about") && this.appModel.state != 'home'){
             TweenMax.to(this, 1, {baseRate : 1, onUpdate: this._updateColor, onUpdateScope: this, ease: Quint.easeInOut})
-        }else if(this.appModel.state == "works"){
+        }else if( (this.appModel.state == "works" && this.isWork ) || (this.appModel.state == "about" && this.isAbout) ){
             TweenMax.to(this, 1, {baseRate1: 1, onUpdate: this._updateColor, onUpdateScope: this, ease: Quint.easeInOut})
         }else if(this.appModel.state == 'home' ){
             // TweenMax.to(this, 1, {baseRate1: 1, onUpdate: this._updateColor, onUpdateScope: this, ease: Quint.easeInOut})
@@ -97,6 +103,13 @@ export default class KeyObjectNumber extends KeyObject {
         if(this.appModel.workNum + 1  == this.name){
             this.select();
         }else if(this.appModel.prevWorkNum + 1 == this.name){
+            this.unselect();
+        }
+    }
+    _aboutChange(){
+        if(this.appModel.aboutNum + 1  == this.name){
+            this.select();
+        }else if(this.appModel.prevAboutNum + 1 == this.name){
             this.unselect();
         }
     }
