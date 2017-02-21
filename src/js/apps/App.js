@@ -175,15 +175,15 @@ export default class App {
         this.appModel.isAppStart = true;
     }
     createLoadMesh(){
-        if(this.loader.rate >= 100 && this.loadedCnt > 1) {
-            this.loadDone();
-            return;
-        }
-
         this.loadedCnt++;
         let percent = this.loader.rate
         this.loaderMesh.updateMesh(percent, this.loadedCnt);
-        this.camera.camerZoomIn(this.createLoadMesh.bind(this), this.loadedCnt);
+        if(this.loader.rate >= 100){
+            this.camera.camerZoomIn(this.loadDone.bind(this), this.loadedCnt);
+        }else{
+            this.camera.camerZoomIn(this.createLoadMesh.bind(this), this.loadedCnt);
+        }
+
     }
     loop(){
 

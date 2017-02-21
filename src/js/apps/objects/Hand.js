@@ -247,6 +247,9 @@ export default class Hand extends THREE.Object3D {
         from.timeScale = -3;
         from.play();
 
+        this.isNotRolloutable = true;
+        this.isNotRolloutableTimer = setTimeout(()=>{this.isNotRolloutable = false;},500)
+
         if(this.mouseDownObject){
             this.controller.doMouseUp({key: this.mouseDownObject.parentObject.name})
         }
