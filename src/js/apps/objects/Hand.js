@@ -217,7 +217,7 @@ export default class Hand extends THREE.Object3D {
         TweenMax.to(from, 0.3, {weight: 0});
     }
     mouseDown(){
-        if(this.isMouseDown && this.isRollover) return;
+        if(this.isMouseDown || !this.isRollover) return;
         this.isMouseDown = true;
 
         let from = this.animations['Grab'];

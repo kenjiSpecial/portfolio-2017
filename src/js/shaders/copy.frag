@@ -74,9 +74,13 @@ void main() {
         n = nestedNoise(vUv * 6.) * 1.0;
         float lerp = uSpaceRate; //(sin( * 0.5) + 1.0) / 2.0;
         offset = mix(0.0, 2.0, lerp);
+        vec2 offsetVector = normalize(uMouse - vUv) * (n * offset);
+
+        gl_FragColor = texture2D(tDiffuse, offsetVector + vUv);
+    }else{
+        vec2 fragCoord = vUv * resolution;
+
+        gl_FragColor = fxaa(tDiffuse, fragCoord, resolution, v_rgbNW, v_rgbNE, v_rgbSW, v_rgbSE, v_rgbM);
     }
 
-    vec2 offsetVector = normalize(uMouse - vUv) * (n * offset);
-    vec2 fragCoord = (vUv + offsetVector) * resolution;
-    gl_FragColor = fxaa(tDiffuse, fragCoord, resolution, v_rgbNW, v_rgbNE, v_rgbSW, v_rgbSE, v_rgbM);
 }

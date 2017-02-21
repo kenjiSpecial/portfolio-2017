@@ -2,7 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title></title>
+  <title>Kenji Saito - 2017 Portfolio</title>
+
+  <meta name="description" content="Kenji Saito Web Site">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="Kenji Saito">
+  <meta property="og:description" content="Kenji Saito web site">
+  <meta property="og:image" content="http://kenji-special.info/images/kenji.jpg">
+  <meta property="og:url" content="http://kenji-special.info">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kenji Saito website">
+
+  <meta name="twitter:card" content="photo">
+  <meta name="twitter:site" content="@kenji_special">
+  <meta name="twitter:title" content="Kenji Saito Website">
+  <meta name="twitter:image" content="http://kenji-special.info/images/kenji.jpg">
+  <meta name="twitter:url" content="http://kenji-special.info">
+
   <style>
     *{
       margin: 0;
@@ -19,6 +36,14 @@
     }
   </style>
   <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <script>
+    var ua = navigator.userAgent.toLowerCase();
+    var isiOS = (/ip(hone|od|ad)/i).test(ua) && !window.MSStream;
+    var isDroid = (/android/i).test(ua);
+    var isTablet = (isiOS || isDroid) && screen.width > 740;
+
+    if ((isiOS || isDroid) && !isTablet) window.location.href = "http://archive.kenji-special.info/";
+  </script>
 </head>
 <body>
   <script src="bundle.js"></script>

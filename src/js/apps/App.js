@@ -35,7 +35,7 @@ export default class App {
             antialias: true
         });
         this.renderer.setClearColor( 0xffffff  );
-        this.renderer.setPixelRatio (  window.devicePixelRatio || 1 )
+        // this.renderer.setPixelRatio (  window.devicePixelRatio || 1 )
         this.dom = this.renderer.domElement;
         this.renderer.sortObjects = true;
 
@@ -175,7 +175,7 @@ export default class App {
         this.appModel.isAppStart = true;
     }
     createLoadMesh(){
-        if(this.loader.rate == 100 && this.loadedCnt > 1) {
+        if(this.loader.rate >= 100 && this.loadedCnt > 1) {
             this.loadDone();
             return;
         }
