@@ -1,4 +1,4 @@
-##http://kenji-special.info/
+http://kenji-special.info/
 
 #portfolio-2017
 
