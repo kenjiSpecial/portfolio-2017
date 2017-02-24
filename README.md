@@ -1,35 +1,25 @@
-#three-js-prototype-startker-kit
+http://kenji-special.info/
 
-It is based on ["budo-gulp-starter"](https://github.com/mattdesl/budo-gulp-starter) by [Matt](https://github.com/mattdesl)
+#portfolio-2017
 
-the below is the README.md of ["budo-gulp-starter"](https://github.com/mattdesl/budo-gulp-starter).
+source codes for kenji saito portfolio site for 2017(http://kenji-special.info/). it is pure webgl site. I used three.js for building webgl.
 
-## In Development :construction:
+#sketches
+sketches were made based on portfolio codes. the basic function and data are same, but the effects to the por are different.
 
-The [feature/gulp](https://github.com/mattdesl/budo/tree/feature/gulp) branch of budo is currently in development and review. Soon it should be part of master.
+####sketch00
 
-# budo-gulp-starter
+God Mouse
 
-[![stable](http://badges.github.io/stability-badges/dist/stable.svg)](http://github.com/badges/stability-badges)
+https://github.com/kenjiSpecial/portfolio-2017/tree/sketch00
+http://kenji-special.info/sketch/00
 
-A "starter kit" with [budō](https://github.com/mattdesl/budo), SASS, and Gulp. The aim is rapid iteration and a tight feedback loop. Could be augmented with VueJS, React, or any frameworks that work in browserify.
 
-[[demo]](http://mattdesl.github.io/budo-gulp-starter/app/)
-
-Some highlights:
-
-  - npm dependencies with browserify
-  - fast incremental bundling with watchify
-  - SASS for CSS pre-processing
-  - LiveReload browser refresh on `bundle.js` update
-  - LiveReload CSS injection on *.scss changes
-  - Babel for ES6 transpiling
-  - Roolify for ES6 Node Module
-  - Syntax errors shown in the browser during development
-
-Note that budō is not tied to Gulp, and in some cases it may be easier to use it's command-line version. 
 
 ## Usage
+
+
+the dev environment is based on ["budo-gulp-starter"](https://github.com/mattdesl/budo-gulp-starter) by [Matt](https://github.com/mattdesl)
 
 ```sh
 git clone https://github.com/mattdesl/budo-gulp-starter.git
@@ -41,12 +31,6 @@ npm install
 # start development server & open browser
 npm run open
 ```
-
-This should run the watch server and open `localhost:9966` in your default browser. Changes to `src/index.js` will trigger a incremental bundle and page reload. Changes to `src/sass/main.scss` will cause CSS injection without losing application state. 
-
-Syntax errors are overlayed in the browser with a custom style:
-
-![img](http://i.imgur.com/dP7lH7N.png) 
 
 ## tasks
 
