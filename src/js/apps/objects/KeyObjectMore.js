@@ -48,8 +48,11 @@ export default class KeyObjectMore extends KeyObject {
         super.keydown();
     }
     keyup(){
+        if(this.collisionBoxMesh && this.isDown){
+            window.open('http://archive.kenji-special.info/', '_blank');
+        }
         super.keyup();
-        window.open('http://archive.kenji-special.info/', '_blank');
+
     }
     select(){
     }
