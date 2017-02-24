@@ -4,6 +4,9 @@ http://kenji-special.info/
 
 source codes for kenji saito portfolio site for 2017(http://kenji-special.info/). it is pure webgl site. I used three.js for building webgl.
 
+#sketches
+sketches were made based on portfolio codes. the basic function and data are same, but the effects to the por are different.
+
 ####sketch00
 
 God Mouse
@@ -13,10 +16,10 @@ http://kenji-special.info/sketch/00
 
 
 
-the dev environment is based on ["budo-gulp-starter"](https://github.com/mattdesl/budo-gulp-starter) by [Matt](https://github.com/mattdesl)
-
-
 ## Usage
+
+
+the dev environment is based on ["budo-gulp-starter"](https://github.com/mattdesl/budo-gulp-starter) by [Matt](https://github.com/mattdesl)
 
 ```sh
 git clone https://github.com/mattdesl/budo-gulp-starter.git
