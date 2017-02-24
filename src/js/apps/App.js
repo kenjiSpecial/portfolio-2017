@@ -12,6 +12,7 @@ import PostEffectScene from './scenes/PostEffectScene';
 import OutputEffectScene from './scenes/OutputEffectScene';
 import Camera from './camera/camera';
 import Hand from './objects/Hand';
+import DummyHands from './objects/DumyHands';
 
 const OrbitControls = require('three-orbit-controls')(THREE);
 
@@ -156,14 +157,18 @@ export default class App {
         this.appController.setKeyboardObject(this.keyboardObject)
     }
     _addHand(){
-        this.hand = new Hand({
+        let params = {
             geometry : this.loader.geometries['hand'],
             camera : this.camera,
             model : this.appModel,
             controller : this.appController
-        });
+        }
+        this.hand = new Hand(params);
         this.scene.add(this.hand);
         this.hand.addKeyboard(this.keyboardObject)
+
+        this.dummyHands = new DummyHands(params);
+        this.scene.add(this.dummyHands);
     }
     _addPostEffectScene(){
         this._postEffectScene.addAboutTextures(this.loader.textures);
@@ -172,6 +177,7 @@ export default class App {
     }
     _startApp(){
         this.hand.animateIn();// .bind(this.hand)
+        this.dummyHands.animateIn();
         this.appModel.isAppStart = true;
     }
     createLoadMesh(){
@@ -191,6 +197,7 @@ export default class App {
 
         this.camera.update();
         if(this.hand) this.hand.update(delta);
+        if(this.dummyHands) this.dummyHands.update(this.hand);
         this.renderer.render(this.scene, this.camera, this.renderTarget);
         let texture;
         if(this.appModel.state == 'about' || this.appModel.state == 'works'){

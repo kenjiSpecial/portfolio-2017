@@ -49,6 +49,7 @@ export default class KeyObjectMore extends KeyObject {
         super.keydown();
     }
     keyup(){
+
         super.keyup();
         if(this.name == 'z'){
             window.open('https://twitter.com/kenji_special', '_blank');
