@@ -2,7 +2,7 @@
 precision highp float;
 #endif
 
-#define MAX_BONES 1019
+#define MAX_BONES 128
 
 attribute vec3 position;
 attribute vec3 position2;

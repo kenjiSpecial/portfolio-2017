@@ -1,11 +1,11 @@
 export const initAssets = {
-    base : './models',
+    base : '/models',
     json : ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'button'],
     mesh : [{'name' : 'button', 'count' : 2}],
     images : []
 };
 export const mainAssets = {
-    base : './models',
+    base : '/models',
     json : [
         // 'ButtonCol/main', 'ButtonCol/sub0', 'ButtonCol/sub1',
         // 'ButtonD/main', 'ButtonD/sub0', 'ButtonD/sub1',
@@ -28,19 +28,19 @@ export const mainAssets = {
         'space'
     ],
     images : [
-        {name : 'about', src : './images/about.jpg'},
-        {name : 'about0', src : './images/about0.jpg'},
-        {name : 'about1', src : './images/about1.jpg'},
-        {name : 'about2', src : './images/about2.jpg'},
-        {name : 'about3', src : './images/about3.jpg'},
-        {name : 'about4', src : './images/about4.jpg'},
-        {name : 'capitolcouture', src : './images/capitolcouture.jpg'},
-        {name : 'sheepinator', src : './images/sheepinator.jpg'},
-        {name : 'xfile', src : './images/xfile.jpg'},
-        {name : 'more', src : './images/more.jpg'},
-        {name : 'pnoise', src : './images/noise/pnoise.png'},
-        {name : 'pnoise2', src : './images/noise/pnoise2.png'},
-        {name : 'pnoise3', src : './images/noise/pnoise3.jpg'},
+        {name : 'about', src : '/images/about.jpg'},
+        {name : 'about0', src : '/images/about0.jpg'},
+        {name : 'about1', src : '/images/about1.jpg'},
+        {name : 'about2', src : '/images/about2.jpg'},
+        {name : 'about3', src : '/images/about3.jpg'},
+        {name : 'about4', src : '/images/about4.jpg'},
+        {name : 'capitolcouture', src : '/images/capitolcouture.jpg'},
+        {name : 'sheepinator', src : '/images/sheepinator.jpg'},
+        {name : 'xfile', src : '/images/xfile.jpg'},
+        {name : 'more', src : '/images/more.jpg'},
+        {name : 'pnoise', src : '/images/noise/pnoise.png'},
+        {name : 'pnoise2', src : '/images/noise/pnoise2.png'},
+        {name : 'pnoise3', src : '/images/noise/pnoise3.jpg'},
     ],
     mesh : []
 };
