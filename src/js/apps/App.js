@@ -34,7 +34,7 @@ export default class App {
         this.renderer = new WebGLRenderer({
             antialias: true
         });
-        this.renderer.setClearColor( 0xffffff  );
+        this.renderer.setClearColor( 0x000000  );
         // this.renderer.setPixelRatio (  window.devicePixelRatio || 1 )
         this.dom = this.renderer.domElement;
         this.renderer.sortObjects = true;
@@ -124,13 +124,11 @@ export default class App {
         this.initButtons.add(mesh);
     }
     _initAssetLoaded(){
-        TweenMax.to(this.dom, 1.2, {opacity: 1, ease: Quint.easeOut});
 
         this.loader.removeEventListener ( 'loaded', this._initAssetLoaded );
         let index = 0;
 
         this.scene.add(this.loaderMesh);
-        this._addInitButtons();
 
         this.loader.addAssets(mainAssets);
         this.createLoadMesh()
@@ -139,15 +137,12 @@ export default class App {
     }
     loadDone(){
         this.scene.remove(this.initButtons);
-        this.initButtons.children.forEach((child)=>{
-            child.geometry.dispose();
-            child.material.dispose();
-        })
 
         this._addKeyboard();
         this._addHand();
         this._addPostEffectScene();
 
+        TweenMax.to(this.dom, 1.2, {opacity: 1, ease: Quint.easeOut});
         this.camera.loadDone(this._startApp.bind(this), null, this.loaderMesh);
     }
     _addKeyboard(){
@@ -172,6 +167,7 @@ export default class App {
     }
     _startApp(){
         this.hand.animateIn();// .bind(this.hand)
+        this.camera = this.hand.camera;
         this.appModel.isAppStart = true;
     }
     createLoadMesh(){
@@ -189,8 +185,9 @@ export default class App {
 
         let delta = this.clock.getDelta();// * 0.1;
 
-        this.camera.update();
         if(this.hand) this.hand.update(delta);
+
+        this.camera.update();
         this.renderer.render(this.scene, this.camera, this.renderTarget);
         let texture;
         if(this.appModel.state == 'about' || this.appModel.state == 'works'){

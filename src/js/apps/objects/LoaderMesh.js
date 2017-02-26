@@ -12,6 +12,8 @@ export default class LoaderMesh extends THREE.Object3D {
         this.loader = new Loader();
     }
     updateMesh(percent, loadedCnt){
+        return;
+
         let mat = new THREE.MeshStandardMaterial({
             color : 0x3F3F3F,
             roughness : 0,
@@ -60,15 +62,15 @@ export default class LoaderMesh extends THREE.Object3D {
             number.add(mesh);
             this.meshes.push(mesh);
         }
+        //
+        // number.position.z =  0;
+        // number.position.x = 0; // THREE.Math.randFloat(-100, 100);
+        // number.position.y = 0;//THREE.Math.randFloat(-100, 100);
+        // number.scale.x = 1/ Math.pow(25, loadedCnt );
+        // number.scale.y = 1/ Math.pow(25, loadedCnt );
+        // number.scale.z = 1/ Math.pow(25, loadedCnt );
 
-        number.position.z =  0;
-        number.position.x = 0; // THREE.Math.randFloat(-100, 100);
-        number.position.y = 0;//THREE.Math.randFloat(-100, 100);
-        number.scale.x = 1/ Math.pow(25, loadedCnt );
-        number.scale.y = 1/ Math.pow(25, loadedCnt );
-        number.scale.z = 1/ Math.pow(25, loadedCnt );
-
-        TweenMax.to(mat, 0.6, {opacity: 1, delay : 0.6});
+        TweenMax.to(mat, 0.6, {opacity: 1});
     }
 
     destroy(){

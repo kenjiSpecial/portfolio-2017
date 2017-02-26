@@ -3,9 +3,11 @@
  */
 
 const THREE = require('three');
+import Camera from '../camera/camera';
+import Particles from './HandParticles';
 
 export default class Hand extends THREE.Object3D {
-    constructor(params) {
+    constructor(params){
         super()
 
         this.camera = params.camera;
@@ -16,20 +18,25 @@ export default class Hand extends THREE.Object3D {
         this._isRollover = false;
         this.isPrevRollover = false;
         this.visible = false;
-        this.isActive  = false;
+        this.isActive = false;
+
 
         this._createHand();
+        this._createParticles();
         this.model.addEventListener('stateChange', this._onStateChange.bind(this));
+
     }
     _createHand(){
 
         let mat = new THREE.MeshStandardMaterial({
-            color : 0xccccbb,
+            color: 0xff0000,
             // color : 0xff,
-            roughness : 0,
-            metalness : 0,
-            transparent : true,
-            shading : THREE.FlatShading
+            transparent: true,
+            roughness: 0,
+            metalness: 0,
+            opacity: 0.01,
+            alphaTest : 0.1
+            // shading : THREE.FlatShading
             // wireframe : true
         });
         mat.skinning = true;
@@ -42,57 +49,74 @@ export default class Hand extends THREE.Object3D {
 
         this.animations = [];
 
-        this.geometry.animations.forEach((_anim)=>{
+        this.geometry.animations.forEach((_anim) =>{
             let animationName = _anim.name;
             this.animations[animationName] = this.mixer.clipAction(_anim).setLoop(THREE.LoopOnce);
             this.animations[animationName].clampWhenFinished = true;
         });
-
         window.geometry = this.geometry;
-        this.fingerNames = [ "Bone.003" ];
+        window.mesh = this.mesh;
 
-        this.collideBoxMesh = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.5 , 1.5), new THREE.MeshBasicMaterial({color : 0xffff00, transparent : true, opacity: 0.01}));
+        this.fingerNames = ["Bone.003"];
+
+        this.collideBoxMesh = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.5, 1.5), new THREE.MeshBasicMaterial({
+            color: 0xffff00,
+            transparent: true,
+            opacity: 0.01
+        }));
 
         this.root = this;
         this.matrix = this.matrixWorld;
 
-        this.bones = this.getBoneList( this.mesh );
+        this.bones = this.getBoneList(this.mesh);
 
         this.collidableMeshList = [];
 
+
+    }
+    _createParticles(){
+        this.particles = new Particles({
+            parent : this.mesh,
+            geometry : this.mesh.geometry
+        });
+        this.mesh.add(this.particles);
     }
     animateIn(){
         this.visible = true;
-        TweenMax.fromTo(this.mesh.material, 1, {opacity : 0.01}, {opacity : 1, onUpdate : function(){
-            if(this.mouse && this.camera) this.mouseMove(this.mouse, this.camera);
-        }, onUpdateScope : this, ease : Quint.easeOut, onComplete : function(){
-            this.isActive = true;
-        }, onCompleteScope: this});
+        // TweenMax.fromTo(this.mesh.material, 1, {opacity: 0.01}, {
+        //     opacity: 1, onUpdate: function(){
+        //         if(this.mouse && this.camera) this.mouseMove(this.mouse, this.camera);
+            // }, onUpdateScope: this, ease: Quint.easeOut, onComplete: function(){
+                this.isActive = true;
+            // }, onCompleteScope: this
+        // });
     }
+
     getBoneList(object){
 
         var boneList = [];
 
-        if ( object && object.isBone ) {
-            this.fingerNames.forEach((fingerName)=>{
+        if(object && object.isBone){
+            this.fingerNames.forEach((fingerName) =>{
                 if(object.name == fingerName){
-                    boneList.push( object );
+                    boneList.push(object);
                 }
 
             })
 
         }
 
-        for ( var i = 0; i < object.children.length; i ++ ) {
+        for(var i = 0; i < object.children.length; i++){
 
-            boneList.push.apply( boneList, this.getBoneList( object.children[ i ] ) );
+            boneList.push.apply(boneList, this.getBoneList(object.children[i]));
 
         }
 
         return boneList;
 
     }
-    update(dt = 1/60){
+
+    update(dt = 1 / 60){
         this.mixer.update(dt);
 
         let vector = new THREE.Vector3();
@@ -100,22 +124,24 @@ export default class Hand extends THREE.Object3D {
         let boneMatrix = new THREE.Matrix4();
         let matrixWorldInv = new THREE.Matrix4();
 
-        matrixWorldInv.getInverse( this.root.matrixWorld );
+        matrixWorldInv.getInverse(this.root.matrixWorld);
 
-        for ( let i = 0, j = 0; i < this.bones.length; i ++ ) {
-            let bone = this.bones[ i ];
+        for(let i = 0, j = 0; i < this.bones.length; i++){
+            let bone = this.bones[i];
 
-            if ( bone.parent && bone.parent.isBone ) {
+            if(bone.parent && bone.parent.isBone){
 
-                boneMatrix.multiplyMatrices( matrixWorldInv, bone.matrixWorld );
-                vector.setFromMatrixPosition( boneMatrix );
+                boneMatrix.multiplyMatrices(matrixWorldInv, bone.matrixWorld);
+                vector.setFromMatrixPosition(boneMatrix);
                 this.collideBoxMesh.position.copy(vector);
             }
         }
 
         this._updateCollide();
-
+        this.mesh.updateMatrixWorld(true);
+        this.particles.update(this.mesh.geometry);
     }
+
     _updateCollide(){
 
 
@@ -125,16 +151,16 @@ export default class Hand extends THREE.Object3D {
         if(this.collidableMeshList.length > 0){
             let originPoint = this.collideBoxMesh.position.clone();
 
-            for(let vertexIndex = 0; vertexIndex < this.collideBoxMesh.geometry.vertices.length ; vertexIndex++){
+            for(let vertexIndex = 0; vertexIndex < this.collideBoxMesh.geometry.vertices.length; vertexIndex++){
 
                 let localVertex = this.collideBoxMesh.geometry.vertices[vertexIndex].clone();
-                let globalVertex = localVertex.applyMatrix4( this.collideBoxMesh.matrix );
-                let directionVector = globalVertex.sub( this.collideBoxMesh.position );
+                let globalVertex = localVertex.applyMatrix4(this.collideBoxMesh.matrix);
+                let directionVector = globalVertex.sub(this.collideBoxMesh.position);
 
-                let ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize());
+                let ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
                 let collisionResults = ray.intersectObjects(this.collidableMeshList);
 
-                if ( collisionResults.length > 0 && collisionResults[0].distance - directionVector.length() < 0 ) {
+                if(collisionResults.length > 0 && collisionResults[0].distance - directionVector.length() < 0){
 
                     collidedObject = collisionResults[0]
                     isRollover = true;
@@ -148,6 +174,7 @@ export default class Hand extends THREE.Object3D {
 
 
     }
+
     _updateRollOver(isRollover, collideObject){
 
         this.isRollover = isRollover;
@@ -161,46 +188,54 @@ export default class Hand extends THREE.Object3D {
 
         if(this.isNotRolloutable) return;
 
-        if(this.collidedObject  && this.collidedObject != this.prevCollidedObject){
-            this.controller.doRollover({key : this.collidedObject.parentObject.name});
+        if(this.collidedObject && this.collidedObject != this.prevCollidedObject){
+            this.controller.doRollover({key: this.collidedObject.parentObject.name});
         }
 
         if(this.prevCollidedObject && this.collidedObject != this.prevCollidedObject){
             this.controller.doMouseUp({key: this.prevCollidedObject.parentObject.name})
-            this.controller.doRollout({key : this.prevCollidedObject.parentObject.name});
+            this.controller.doRollout({key: this.prevCollidedObject.parentObject.name});
         }
     }
+
     addKeyboard(keyboard){
-        keyboard.children.forEach((child)=>{this.addCollidableMesList(child)});
+        keyboard.children.forEach((child) =>{
+            this.addCollidableMesList(child)
+        });
     }
+
     addCollidableMesList(mesh){
         if(mesh.collisionBoxMesh) this.collidableMeshList.push(mesh.collisionBoxMesh);
     }
+
     mouseMove(mouse, camera){
         this.camera = camera;
         this.mouse = mouse;
         let vector = new THREE.Vector3(
-                mouse.x,
-                mouse.y,
-                0.5
+            mouse.x,
+            mouse.y,
+            0.5
         );
 
-        vector.unproject( this.camera );
+        vector.unproject(this.camera);
 
-        let dir = vector.sub( this.camera.position ).normalize();
+        let dir = vector.sub(this.camera.position).normalize();
 
-        let distance = - this.camera.position.z / dir.z;
+        let distance = -this.camera.position.z / dir.z;
 
-        let pos = this.camera.position.clone().add( dir.multiplyScalar( distance ) );
+        let pos = this.camera.position.clone().add(dir.multiplyScalar(distance));
         this.mesh.position.copy(pos);
         this.mesh.position.z = 1.5;
+
     }
+
     rollOver(){
         let action = this.animations['Grab'];
         action.paused = false;
         action.timeScale = 3;
         action.play();
     }
+
     rollOut(){
         if(this.isNotRolloutable) return;
 
@@ -216,6 +251,7 @@ export default class Hand extends THREE.Object3D {
         TweenMax.to(action, 0.3, {weight: 1});
         TweenMax.to(from, 0.3, {weight: 0});
     }
+
     mouseDown(){
         if(this.isMouseDown || !this.isRollover) return;
         this.isMouseDown = true;
@@ -231,13 +267,16 @@ export default class Hand extends THREE.Object3D {
 
         if(this.isNotRolloutableTimer) clearTimeout(this.isNotRolloutableTimer);
         this.isNotRolloutable = true;
-        this.isNotRolloutableTimer = setTimeout(()=>{this.isNotRolloutable = false;},500)
+        this.isNotRolloutableTimer = setTimeout(() =>{
+            this.isNotRolloutable = false;
+        }, 500)
 
         if(this.collidedObject && this.collidedObject.parentObject && this.collidedObject.parentObject.name){
             this.controller.doMouseDown({key: this.collidedObject.parentObject.name})
             this.mouseDownObject = this.collidedObject;
         }
     }
+
     mouseUp(){
         if(!this.isMouseDown) return;
         this.isMouseDown = false;
@@ -248,21 +287,26 @@ export default class Hand extends THREE.Object3D {
         from.play();
 
         this.isNotRolloutable = true;
-        this.isNotRolloutableTimer = setTimeout(()=>{this.isNotRolloutable = false;},500)
+        this.isNotRolloutableTimer = setTimeout(() =>{
+            this.isNotRolloutable = false;
+        }, 500)
 
         if(this.mouseDownObject){
             this.controller.doMouseUp({key: this.mouseDownObject.parentObject.name})
         }
     }
+
     _onStateChange(){
         if(this.model.state == "home"){
             this.prevCollidedObject = this.collidedObject;
             this.collidedObject = null;
         }
     }
+
     get isRollover(){
         return this._isRollover;
     }
+
     set isRollover(value){
         this.isPrevRollover = this._isRollover;
         this._isRollover = value

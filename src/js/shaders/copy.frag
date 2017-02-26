@@ -78,9 +78,10 @@ void main() {
 
         gl_FragColor = texture2D(tDiffuse, offsetVector + vUv);
     }else{
-        vec2 fragCoord = vUv * resolution;
+        gl_FragColor = texture2D(tDiffuse, vUv);
+//        vec2 fragCoord = vUv * resolution;
 
-        gl_FragColor = fxaa(tDiffuse, fragCoord, resolution, v_rgbNW, v_rgbNE, v_rgbSW, v_rgbSE, v_rgbM);
+//        gl_FragColor = fxaa(tDiffuse, fragCoord, resolution, v_rgbNW, v_rgbNE, v_rgbSW, v_rgbSE, v_rgbM);
     }
 
 }

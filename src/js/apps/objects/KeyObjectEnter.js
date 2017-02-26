@@ -5,6 +5,7 @@ import Loader from '../loader/Loader';
 import KeyObject from './KeyObject'
 import AppModel from '../models/AppModel';
 import {works} from '../utils/config';
+import KeyObjectParticles3 from './KeyObjectParticles3'
 
 export default class KeyObjectEnter extends KeyObject {
     constructor(params) {
@@ -15,39 +16,24 @@ export default class KeyObjectEnter extends KeyObject {
         this.appModel.addEventListener('transformToHome', this._transformToHome.bind(this));
     }
     _createMesh(){
-        let mat = new THREE.MeshStandardMaterial({
-            color : 0x3F3F3F,
-            roughness : 0,
-            metalness : 0,
-            transparent : true
-            // wireframe : true
+        let main = `${this.name}/sub0`;
+        let pt = new KeyObjectParticles3({
+            mainGeometry : this.loader.geometries['button'],
+            subGeometry : this.loader.geometries[main],
         });
-
-
-        this.meshes = {};
-        let main = `${this.name}/main`;
-        this.meshes['main'] = new THREE.Mesh(this.loader.geometries[main], mat);
-        this.add(this.meshes['main'])
-
-        let sub0 = `${this.name}/sub0`;
-        this.meshes['sub0'] = new THREE.Mesh(this.loader.geometries[sub0], mat.clone());
-        this.add(this.meshes['sub0'])
+        this.add(pt);
+        this.particleMesh = pt;
 
         this.name = 'Enter'; //this.name.replace('Button', '').toLowerCase();
-
-
-        this.mainColor = new THREE.Color(0x3f3f3f);
-        this.targetColor = new THREE.Color(0x196284);
-        this.curColor = new THREE.Color();
-        this.colorRate = 0;
-
-        this._updateColor();
     }
 
     rollover(){
         if(this.isOver) return;
         this.isOver = true;
-
+        if(this.particleMesh){
+            TweenMax.killTweensOf([this.particleMesh.uniforms.uRollover]);
+            TweenMax.to(this.particleMesh.uniforms.uRollover, 0.6, {value: 1, ease: Quint.easeOut });
+        }
     }
     keydown(){
 
@@ -92,38 +78,28 @@ export default class KeyObjectEnter extends KeyObject {
         if(!this.isOver) return;
 
         this.isOver = false;
+        if(this.particleMesh){
+            TweenMax.killTweensOf([this.particleMesh.uniforms.uRollover]);
+            TweenMax.to(this.particleMesh.uniforms.uRollover, 0.6, {value: 0, ease: Quint.easeOut });
+        }
     }
     active(){
         if(this.isActive) return;
-
-        TweenMax.killTweensOf([this.meshes['sub0'].scale, this.meshes['sub0'].material, this]);
-
-        TweenMax.to(this.meshes['sub0'].scale, 0.6, {y: 0, onComplete : function(){
-            this.meshes['sub0'].visible = false;
-        }, onCompleteScope: this, ease: Quint.easeOut });
-        TweenMax.to(this.meshes['sub0'].material, 0.6, {opacity: 0, ease: Quint.easeOut});
-        TweenMax.to(this, 1, { colorRate : 1, onUpdate: this._updateColor, onUpdateScope: this, onComplete: function(){
-        }, onCompleteScope : this})
+        TweenMax.killTweensOf([this.particleMesh.uniforms.uTranslate]);
+        TweenMax.to( this.particleMesh.uniforms.uTranslate, 0.6, {
+            value: 1, ease: Quint.easeOut
+        });
 
         this.isActive = true;
     }
     inactive(){
         if(!this.isActive) return;
 
-        TweenMax.killTweensOf([this.meshes['sub0'].scale, this.meshes['sub0'].material, this]);
-
+        TweenMax.killTweensOf([this.particleMesh.uniforms.uTranslate]);
         this.isActive = false;
-        TweenMax.killTweensOf([this.meshes['sub0'].scale, this.meshes['sub0'].material]);
-
-        this.meshes['sub0'].visible = true;
-        TweenMax.to(this.meshes['sub0'].scale, 0.6, {
-            y: 1, onComplete: function(){
-            }, onCompleteScope: this, ease: Quint.easeOut
+        TweenMax.to( this.particleMesh.uniforms.uTranslate, 0.6, {
+            value: 0, ease: Quint.easeOut
         });
-        TweenMax.to(this.meshes['sub0'].material, 0.6, {opacity: 1, ease: Quint.easeOut});
-        TweenMax.to(this, 1, { colorRate : 0, onUpdate: this._updateColor, onUpdateScope: this, onComplete: function(){
-
-        }, onCompleteScope: this})
     }
     _onStateChange(){
         if(this.appModel.state == "home"){
@@ -137,12 +113,6 @@ export default class KeyObjectEnter extends KeyObject {
     }
     _updateColor(){
 
-        this.curColor.r = (1 - this.colorRate) * this.mainColor.r + this.colorRate * this.targetColor.r;
-        this.curColor.g = (1 - this.colorRate) * this.mainColor.g + this.colorRate * this.targetColor.g;
-        this.curColor.b = (1 - this.colorRate) * this.mainColor.b + this.colorRate * this.targetColor.b;
-
-        this.meshes['main'].material.color = this.curColor;
-        this.meshes['sub0'].material.color = this.curColor;
     }
     _transformToHome(){
         this.inactive();

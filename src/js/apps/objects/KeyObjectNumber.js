@@ -30,7 +30,7 @@ export default class KeyObjectNumber extends KeyObject {
     _createMesh(){
         super._createMesh();
 
-        this.mainColor = new THREE.Color(0x3f3f3f);
+        this.mainColor = new THREE.Color(0x444444);
         this.targetColor = new THREE.Color(0x196284);
         this.targetColorActive = new THREE.Color(0xDD4141);
         this.baseColor = new THREE.Color(0x3f3f3f);
@@ -57,11 +57,20 @@ export default class KeyObjectNumber extends KeyObject {
     }
     _updateColor(){
 
-        this.curColor.r = this.baseRate * this.baseColor.r +  (1-this.baseRate) * ((1 - this.baseRate1) * this.mainColor.r + this.baseRate1 * ( (1-this.colorRate) * this.targetColor.r + this.colorRate *  this.targetColorActive.r) );
-        this.curColor.g = this.baseRate * this.baseColor.g +  (1-this.baseRate) * ((1 - this.baseRate1) * this.mainColor.g + this.baseRate1 * ( (1-this.colorRate) * this.targetColor.g + this.colorRate *  this.targetColorActive.g) );
-        this.curColor.b = this.baseRate * this.baseColor.b +  (1-this.baseRate) * ((1 - this.baseRate1) * this.mainColor.b + this.baseRate1 * ( (1-this.colorRate) * this.targetColor.b + this.colorRate *  this.targetColorActive.b) );
+        this.curColor.r =  ((1 - this.baseRate1) * this.mainColor.r + this.baseRate1 * ( (1-this.colorRate) * this.targetColor.r + this.colorRate *  this.targetColorActive.r) );
+        this.curColor.g =  ((1 - this.baseRate1) * this.mainColor.g + this.baseRate1 * ( (1-this.colorRate) * this.targetColor.g + this.colorRate *  this.targetColorActive.g) );
+        this.curColor.b =  ((1 - this.baseRate1) * this.mainColor.b + this.baseRate1 * ( (1-this.colorRate) * this.targetColor.b + this.colorRate *  this.targetColorActive.b) );
+        // console.log(this.curColor);
+        //
+        this.particleMesh.uniforms.uColor.value = this.curColor;
+        let rollColor = this.curColor.clone();
+        rollColor.r += 60/255;
+        rollColor.g += 60/255;
+        rollColor.b += 60/255;
+        this.particleMesh.uniforms.uRollColor.value = rollColor;
 
-        this.mesh.material.color = this.curColor;
+
+        // this.mesh.material.color = this.curColor;
     }
     keydown(){
         if(this.isSelected) return;

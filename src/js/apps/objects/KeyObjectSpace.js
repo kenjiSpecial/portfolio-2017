@@ -30,7 +30,8 @@ export default class KeyObjectMore extends KeyObject {
             this.collisionBoxMesh = new THREE.Mesh(new THREE.BoxGeometry(12, 2, 2), new THREE.MeshBasicMaterial({
                 color: 0xffff00,
                 wireframe: true,
-
+                transparent: true,
+                opacity: 0.01
             }));
             // this.collisionBoxMesh.position.x = -1.1;
             this.add(this.collisionBoxMesh);
@@ -69,7 +70,7 @@ export default class KeyObjectMore extends KeyObject {
             this.meshes['sub0'].material.color = this.curColor;
             this.meshes['sub1'].material.color = this.curColor;
         }else{
-            this.mesh.material.color = this.curColor;
+            // this.mesh.material.color = this.curColor;
         }
     }
     _transformToHome(){

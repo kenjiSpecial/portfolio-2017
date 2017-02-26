@@ -2,6 +2,9 @@
 
 const THREE = require('three');
 import Loader from '../loader/Loader';
+import KeyObjectParticles from './KeyObjectParticles';
+import KeyObjectParticles2 from './KeyObjectParticles2';
+import {MultipleButtons} from '../utils/config'
 
 export default class KeyObject extends THREE.Object3D {
     constructor(params) {
@@ -14,71 +17,56 @@ export default class KeyObject extends THREE.Object3D {
         this._createMesh();
         this._addCollisionMesh();
     }
-    _createMesh(){
-        let mat = new THREE.MeshStandardMaterial({
-            color : 0x3F3F3F,
-            // color : 0xff,
-            roughness : 0,
-            metalness : 0,
-            transparent : true,
-            shading : THREE.FlatShading
-            // wireframe : true
-        });
+    _createMesh(color, rollColor){
 
-        if(this.name.indexOf('Button') > -1) this._createMultipleMesh(mat);
-        else                                 this._createSingleMesh(mat);
+        if(this.name.indexOf('Button') > -1) this._createMultipleMesh(color, rollColor);
+        else                                 this._createSingleMesh(color, rollColor);
     }
     _addCollisionMesh(){
-        this.collisionBoxMesh = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshBasicMaterial({color : 0xffff00, wireframe : true }));
+        // console.log('_addCollisionMesh');
+        this.collisionBoxMesh = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshBasicMaterial({color : 0x000000, transparent: true, opacity: 0.01, wireframe : true }));
         this.add(this.collisionBoxMesh);
         setTimeout(function(){
             this.collisionBoxMesh.updateMatrixWorld();
             this.remove(this.collisionBoxMesh);
-        }.bind(this), 0)
+        }.bind(this), 0);
 
 
         this.collisionBoxMesh.parentObject = this;
     }
-    _createMultipleMesh(mat){
-        this.meshes = {};
-        let main = `${this.name}/main`;
-        this.meshes['main'] = new THREE.Mesh(this.loader.geometries[main], mat);
-        this.add(this.meshes['main'])
+    _createMultipleMesh( color, rollColor){
 
-        let sub0 = `${this.name}/sub0`;
-        this.meshes['sub0'] = new THREE.Mesh(this.loader.geometries[sub0], mat.clone());
-        this.add(this.meshes['sub0'])
-
-        let sub1 = `${this.name}/sub1`;
-        this.meshes['sub1'] = new THREE.Mesh(this.loader.geometries[sub1], mat.clone());
-        this.add(this.meshes['sub1'])
-
-        this.meshes['sub1'].scale.y = 0.001;
-        this.meshes['sub1'].material.opacity = 0.01;
-        this.meshes['sub1'].visible = false;
+        let pt = new KeyObjectParticles2({
+            mainGeometry : this.loader.geometries[MultipleButtons[this.name][0]],
+            subGeometry : this.loader.geometries[MultipleButtons[this.name][1]],
+            color : color,
+            rollColor : rollColor
+        });
+        this.add(pt);
+        this.particleMesh = pt;
 
         this.name = this.name.replace('Button', '').toLowerCase();
 
     }
 
-    _createSingleMesh(mat){
-        this.mesh = new THREE.Mesh(this.loader.geometries[this.name], mat);
-        this.add(this.mesh);
+    _createSingleMesh( color, rollColor ){
+
+        let pt = new KeyObjectParticles({
+            geometry : this.loader.geometries[this.name],
+            color : color,
+            rollColor : rollColor
+        });
+        this.add(pt);
+        this.particleMesh = pt;
     }
     rollover(){
         if(this.isOver) return;
+        if(this.name == 'button') return;
 
         this.isOver = true;
-        if(this.meshes){
-            TweenMax.killTweensOf([this.meshes['sub1'].scale, this.meshes['sub1'].material, this.meshes['sub0'].scale, this.meshes['sub0'].material,]);
-            this.meshes['sub1'].visible = true;
-            TweenMax.to(this.meshes['sub1'].scale, 0.6, {y: 1, onComplete : function(){
-            }, onCompleteScope: this, ease: Quint.easeOut });
-            TweenMax.to(this.meshes['sub1'].material, 0.6, {opacity: 1, ease: Quint.easeOut});
-            TweenMax.to(this.meshes['sub0'].scale, 0.6, {y: 0.01, onComplete : function(){
-                this.meshes['sub0'].visible = false;
-            }, onCompleteScope: this, ease: Quint.easeOut });
-            TweenMax.to(this.meshes['sub0'].material, 0.6, {opacity: 0.01, ease: Quint.easeOut});
+        if(this.particleMesh){
+            TweenMax.killTweensOf([this.particleMesh.uniforms.uRollover]);
+            TweenMax.to(this.particleMesh.uniforms.uRollover, 0.6, {value: 1, ease: Quint.easeOut });
         }
     }
     keydown(){
@@ -117,21 +105,9 @@ export default class KeyObject extends THREE.Object3D {
 
         this.isOver = false;
 
-        if(this.meshes){
-            TweenMax.killTweensOf([this.meshes['sub1'].scale, this.meshes['sub1'].material, this.meshes['sub0'].scale, this.meshes['sub0'].material,]);
-            this.meshes['sub0'].visible = true;
-            TweenMax.to(this.meshes['sub0'].scale, 0.6, {
-                y: 1, onComplete: function(){
-                }, onCompleteScope: this, ease: Quint.easeOut
-            });
-            TweenMax.to(this.meshes['sub0'].material, 0.6, {opacity: 1, ease: Quint.easeOut});
-
-            TweenMax.to(this.meshes['sub1'].scale, 0.6, {
-                y: 0, onComplete: function(){
-                    this.meshes['sub1'].visible = false;
-                }, onCompleteScope: this, ease: Quint.easeOut
-            });
-            TweenMax.to(this.meshes['sub1'].material, 0.6, {opacity: 0.01, ease: Quint.easeOut});
+        if(this.particleMesh){
+            TweenMax.killTweensOf([this.particleMesh.uniforms.uRollover]);
+            TweenMax.to(this.particleMesh.uniforms.uRollover, 0.6, {value: 0, ease: Quint.easeOut });
         }
     }
 }
