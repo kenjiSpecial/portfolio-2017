@@ -44,11 +44,15 @@ export default class KeyObjectAbout extends KeyObject {
         }
     }
     keydown(){
+
         super.keydown();
     }
     keyup(){
+        if(this.collisionBoxMesh && this.isDown){
+            window.open('http://webgl-sketch-dojo.kenji-special.info/', '_blank');
+        }
         super.keyup();
-        window.open('http://webgl-sketch-dojo.kenji-special.info/', '_blank');
+
     }
     select(){
     }

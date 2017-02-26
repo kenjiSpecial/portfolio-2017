@@ -33,7 +33,7 @@ export default class KeyObjectMore extends KeyObject {
                 // transparent: true,
                 // opacity: 0.01
             }));
-            this.collisionBoxMesh.position.x = -1.1;
+            // this.collisionBoxMesh.position.x = -1.1;
             this.add(this.collisionBoxMesh);
             setTimeout(function(){
                 this.collisionBoxMesh.updateMatrixWorld();
@@ -49,15 +49,16 @@ export default class KeyObjectMore extends KeyObject {
         super.keydown();
     }
     keyup(){
-
-        super.keyup();
-        if(this.name == 'z'){
-            window.open('https://twitter.com/kenji_special', '_blank');
-        }else if(this.name == 'c'){
-            window.open('https://www.linkedin.com/in/kenji-saito-5a327340/', '_blank');
-        }else{
-            window.open('https://github.com/kenjiSpecial', '_blank');
+        if(this.collisionBoxMesh && this.isDown){
+            if(this.name == 'z'){
+                window.open('https://twitter.com/kenji_special', '_blank');
+            }else if(this.name == 'c'){
+                window.open('https://www.linkedin.com/in/kenji-saito-5a327340/', '_blank');
+            }else{
+                window.open('https://github.com/kenjiSpecial', '_blank');
+            }
         }
+        super.keyup();
     }
     select(){
     }
