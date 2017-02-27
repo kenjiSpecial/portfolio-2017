@@ -10,19 +10,21 @@ sketches were made based on portfolio codes. the basic function and data are sam
 
 ####sketch00
 
-God Mouse
-
 [![Alt text](./images/sketch00.png "Optional title")](http://kenji-special.info/sketches/00)
-
-https://github.com/kenjiSpecial/portfolio-2017/tree/sketch00
 
 http://kenji-special.info/sketches/00
 
+codes: https://github.com/kenjiSpecial/portfolio-2017/tree/sketch00
+
+####sketch01
+
 [![Alt text](./images/sketch01.png "Optional title")](http://kenji-special.info/sketches/01)
 
-https://github.com/kenjiSpecial/portfolio-2017/tree/sketch01
-
 http://kenji-special.info/sketches/01
+
+codes: https://github.com/kenjiSpecial/portfolio-2017/tree/sketch01
+
+
 
 
 
